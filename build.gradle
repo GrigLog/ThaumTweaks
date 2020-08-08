@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+
+version = "0.0.1"
+group = "com.griglog.thaumtweaks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "thaumtweaks"
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2823"
+    runDir = "run"
+    mappings = "snapshot_20171003"  // i wanted stable_39, but thaum is too old for this...
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "griglog.thaumtweaks.core.TTPlugin"
+        attributes "FMLCorePluginContainsFMLMod": true
+    }
+}
+
+dependencies {
+    //compile "org.ow2.asm:asm:6.0" //good lib, but causes runtime error for some reason :I
+    //compile "org.ow2.asm:asm-util:6.0"
+    compile 'org.spongepowered:mixin:0.8.1-SNAPSHOT'
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
