@@ -88,6 +88,11 @@ public class InfusionTweaks {
                         "plateBrass"));
 
 
+        NBTTagCompound nbt2 = new NBTTagCompound();
+        nbt2.setByte("type", (byte)2);
+        ItemStack charm2 = new ItemStack(ItemsTC.charmVerdant).copy();
+        charm2.setTagCompound(nbt2);
+
         map.put(new ResourceLocation("thaumcraft:VoidRobeHelm"),
                 new InfusionRecipe("VOIDROBEARMOR", new ItemStack(ItemsTC.voidRobeHelm), 6,
                         (new AspectList())
@@ -102,6 +107,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.charmVerdant),
                         new ItemStack(ItemsTC.fabric),
                         "leather"));
+
 
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setByte("type", (byte)1);
@@ -124,12 +130,6 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.fabric),
                         "leather"));
 
-
-        NBTTagCompound nbt2 = new NBTTagCompound();
-        nbt2.setByte("type", (byte)2);
-        ItemStack charm2 = new ItemStack(ItemsTC.charmVerdant).copy();
-        charm2.setTagCompound(nbt2);
-
         map.put(new ResourceLocation("thaumcraft:VoidRobeLegs"),
                 new InfusionRecipe("VOIDROBEARMOR",
                         new ItemStack(ItemsTC.voidRobeLegs), 6,
@@ -142,7 +142,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.clothLegs),
                         "plateVoid",
                         "plateVoid",
-                        charm2,
+                        new ItemStack(ItemsTC.charmVerdant),
                         new ItemStack(ItemsTC.fabric),
                         "leather"));
 
@@ -266,6 +266,7 @@ public class InfusionTweaks {
                         "plateBrass",
                         new ItemStack(ItemsTC.morphicResonator),
                         new ItemStack(BlocksTC.logGreatwood)));
+
         map.put(new ResourceLocation("thaumcraft:VisAmulet"),
                 new InfusionRecipe("VISAMULET",
                         new ItemStack(ItemsTC.amuletVis, 1, 1), 6,

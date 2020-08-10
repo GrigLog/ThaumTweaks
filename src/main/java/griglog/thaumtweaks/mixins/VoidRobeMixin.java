@@ -46,16 +46,16 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
         super.onArmorTick(world, player, armor);
         if (!world.isRemote && hasSet(player)) {
             if (armorType == EntityEquipmentSlot.HEAD) {
-                if (player.ticksExisted % 40 == 0)
-                    clearDebuffs(player, armor);
+                if (player.ticksExisted % 60 == 0)
+                    tryFeed(player, armor);
             }
             else if (armorType == EntityEquipmentSlot.CHEST) {
                 if (player.ticksExisted % 20 == 0)
                     tryHeal(player, armor);
             }
             else if (armorType == EntityEquipmentSlot.LEGS) {
-                if (player.ticksExisted % 60 == 0)
-                    tryFeed(player, armor);
+                if (player.ticksExisted % 40 == 0)
+                    clearDebuffs(player, armor);
             }
 
         }
@@ -80,8 +80,8 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
             priority = 1;
             ratio = this.damageReduceAmount * 0.035; //70%
         }
-        ratio = (RechargeHelper.consumeCharge(armor, player, Math.round((float)(Math.log(damage) / Math.log(2)))) ?
-                ratio + (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02) : ratio);
+
+        ratio += tryAddRatio(player, armor, damage);
         //85% / 75% if enough vis
         return new ISpecialArmor.ArmorProperties(priority, ratio, armor.getMaxDamage() + 1 - armor.getItemDamage());
     }
@@ -122,6 +122,17 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
     void tryFeed(EntityPlayer player, ItemStack is) {
         if (player.canEat(false) && RechargeHelper.consumeCharge(is, player, 1))
             player.getFoodStats().addStats(1, 0.3F);
+    }
+
+    double tryAddRatio(EntityLivingBase entity, ItemStack is, double damage) {
+        EntityPlayer player = (EntityPlayer) entity;
+        if (player == null)
+            return 0;
+        if (RechargeHelper.getChargePercentage(is, player) > 0.75 &&
+                RechargeHelper.consumeCharge(is, player,
+                        Math.round((float)(Math.log(damage) / Math.log(2)))))
+            return (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02);
+        return 0;
     }
 
     boolean hasSet(EntityPlayer player) {

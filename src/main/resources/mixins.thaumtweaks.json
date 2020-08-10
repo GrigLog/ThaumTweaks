@@ -1,14 +1,15 @@
 {
-  "required": true,
   "minVersion": "0.8.1",
   "package": "griglog.thaumtweaks.mixins",
   "refmap": "mixins.thaumtweaks.refmap.json",
-  "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "VoidRobeMixin",
     "VoidArmorMixin",
     "FortressArmorMixin",
-    "ThaumApiMixin"
-  ]
+    "ThaumApiMixin",
+    "PrimalCrusherMixin"
+  ],
+  "client": [],
+  "server": []
 }

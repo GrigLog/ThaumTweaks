@@ -12,7 +12,7 @@ public class TTContainer extends DummyModContainer {
         ModMetadata meta = getMetadata();
 
         meta.modId = "thaumtweaks_core";
-        meta.name = "ThaumTweaks' Core";
+        meta.name = "ThaumTweaks' Core ";
         meta.credits = "GrigLog";
         meta.authorList = ImmutableList.of("GrigLog");
         meta.description = "Coremod to make thaum more balanced";

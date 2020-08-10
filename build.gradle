@@ -2,12 +2,22 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/maven'
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
+
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+}
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 
 version = "0.0.1"
@@ -27,30 +37,51 @@ minecraft {
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
     flatDir {
         dirs 'libs'
     }
 }
 
-minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
-
-jar {
-    manifest {
-        attributes "FMLCorePlugin": "griglog.thaumtweaks.core.TTPlugin"
-        attributes "FMLCorePluginContainsFMLMod": true
+sourceSets {
+    main {
+        ext.refMap = "mixins.thaumtweaks.refmap.json"
     }
 }
 
-dependencies {
-    //compile "org.ow2.asm:asm:6.0" //good lib, but causes runtime error for some reason :I
-    //compile "org.ow2.asm:asm-util:6.0"
-    compile 'org.spongepowered:mixin:0.8.1-SNAPSHOT'
+configurations {
+    extraLibs
+    implementation.extendsFrom(extraLibs)
 }
+
+
+dependencies {
+    extraLibs('org.spongepowered:mixin:0.8.1-SNAPSHOT') { transitive = false }
+    compile files('libs/Thaumcraft-1.12.2-6.1.BETA26-deobf.jar')
+}
+
+minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
+jar {
+    manifest.attributes(
+            'FMLCorePlugin': 'griglog.thaumtweaks.core.TTPlugin',
+            'FMLCorePluginContainsFMLMod': 'true',
+
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'MixinConfigs': 'mixins.thaumtweaks.json'
+    )
+
+    from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }){
+        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
+    }
+}
+
 
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version

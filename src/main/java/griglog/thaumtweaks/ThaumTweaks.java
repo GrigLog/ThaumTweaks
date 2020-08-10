@@ -2,6 +2,7 @@ package griglog.thaumtweaks;
 
 import griglog.thaumtweaks.handlers.TTHandler;
 import griglog.thaumtweaks.items.TTMaterials;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import thaumcraft.common.lib.enchantment.EnumInfusionEnchantment;
 
 import java.io.IOException;
 
@@ -39,6 +41,9 @@ public class ThaumTweaks
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) throws NoSuchMethodException {
         //BookTab.setup();
+        for (EnumInfusionEnchantment e: EnumInfusionEnchantment.values()) {
+            e.maxLevel++;
+        }
     }
 
 

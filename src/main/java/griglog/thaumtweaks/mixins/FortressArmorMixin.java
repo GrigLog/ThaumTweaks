@@ -78,8 +78,7 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
             }
         }
 
-        ratio = (RechargeHelper.consumeCharge(armor, player, Math.round((float)(Math.log(damage) / Math.log(2)))) ?
-                ratio + (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02) : ratio);
+        ratio += tryAddRatio(player, armor, damage);
         //76% / 80% if enough vis
         ap.AbsorbRatio = ratio;
         ap.Priority = priority;
@@ -131,5 +130,16 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         }
 
         return ar;
+    }
+
+    double tryAddRatio(EntityLivingBase entity, ItemStack is, double damage) {
+        EntityPlayer player = (EntityPlayer) entity;
+        if (player == null)
+            return 0;
+        if (RechargeHelper.getChargePercentage(is, player) > 0.70 &&
+                RechargeHelper.consumeCharge(is, player,
+                        Math.round((float)(Math.log(damage) / Math.log(2)))))
+            return (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02);
+        return 0;
     }
 }
