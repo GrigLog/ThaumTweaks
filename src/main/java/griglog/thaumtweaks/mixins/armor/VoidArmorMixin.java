@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins;
+package griglog.thaumtweaks.mixins.armor;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

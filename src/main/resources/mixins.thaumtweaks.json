@@ -4,11 +4,13 @@
   "refmap": "mixins.thaumtweaks.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "VoidRobeMixin",
-    "VoidArmorMixin",
-    "FortressArmorMixin",
+    "armor.VoidRobeMixin",
+    "armor.VoidArmorMixin",
+    "armor.FortressArmorMixin",
     "ThaumApiMixin",
-    "PrimalCrusherMixin"
+    "PrimalCrusherMixin",
+    "events.PlayerEventsMixin",
+    "events.EntityEventsMixin"
   ],
   "client": [],
   "server": []

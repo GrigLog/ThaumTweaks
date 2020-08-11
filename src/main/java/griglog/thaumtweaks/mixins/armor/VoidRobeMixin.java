@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins;
+package griglog.thaumtweaks.mixins.armor;
 
 import com.google.common.collect.Multimap;
 import griglog.thaumtweaks.SF;

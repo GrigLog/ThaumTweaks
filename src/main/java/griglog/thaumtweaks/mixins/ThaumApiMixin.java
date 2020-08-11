@@ -29,7 +29,6 @@ public abstract class ThaumApiMixin {
     @Inject(method="addInfusionCraftingRecipe", at=@At("HEAD"), cancellable=true, remap=false)
     private static void addInfusion(ResourceLocation registry, InfusionRecipe recipe, CallbackInfo ci) {
         if (InfusionTweaks.map.containsKey(registry)) {
-            SF.print(registry.toString());
             ThaumcraftApi.getCraftingRecipes().put(registry, InfusionTweaks.map.get(registry));
             ci.cancel();
         }

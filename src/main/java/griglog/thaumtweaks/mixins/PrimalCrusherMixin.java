@@ -2,6 +2,7 @@ package griglog.thaumtweaks.mixins;
 
 import com.google.common.eventbus.Subscribe;
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -26,7 +27,7 @@ import java.util.Set;
 
 
 @Mixin(ItemPrimalCrusher.class)
-public  class PrimalCrusherMixin extends ItemTool {
+public abstract class PrimalCrusherMixin extends ItemTool {
     protected PrimalCrusherMixin(float attackDamageIn, float attackSpeedIn, ToolMaterial materialIn, Set<Block> effectiveBlocksIn) {
         super(attackDamageIn, attackSpeedIn, materialIn, effectiveBlocksIn);
     }
@@ -50,7 +51,7 @@ public  class PrimalCrusherMixin extends ItemTool {
     public static ToolMaterial material;
 
     static {
-        material = EnumHelper.addToolMaterial("PRIMALVOID", 5, 5000, 10.0F, 4.0F, 20).setRepairItem(new ItemStack(ItemsTC.ingots, 1, 1));
+        material = TTMaterials.TOOLMAT_PRIMALVOID;
     }
 
 }

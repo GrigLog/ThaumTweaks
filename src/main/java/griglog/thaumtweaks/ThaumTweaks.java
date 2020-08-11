@@ -26,7 +26,6 @@ public class ThaumTweaks
     public static final String MC_VERSION = "[1.12.2]";
 
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);
-    //public static final CreativeTabs MOD_TAB = new CreativeTab();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) throws IOException, NoSuchMethodException {
@@ -40,7 +39,6 @@ public class ThaumTweaks
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) throws NoSuchMethodException {
-        //BookTab.setup();
         for (EnumInfusionEnchantment e: EnumInfusionEnchantment.values()) {
             e.maxLevel++;
         }

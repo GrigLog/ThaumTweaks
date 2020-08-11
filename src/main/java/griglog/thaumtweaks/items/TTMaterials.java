@@ -11,6 +11,9 @@ import thaumcraft.api.ThaumcraftMaterials;
 import thaumcraft.api.items.ItemsTC;
 
 public class TTMaterials {
+    public static Item.ToolMaterial TOOLMAT_PRIMALVOID = EnumHelper.addToolMaterial("PRIMALVOID", 5, 5000, 10.0F, 4.0F, 20).setRepairItem(new ItemStack(ItemsTC.ingots, 1, 1));
+
+
     public static void overrideMaterials()
     {
         ThaumcraftMaterials.ARMORMAT_THAUMIUM = EnumHelper.addArmorMaterial("THAUMIUM", "THAUMIUM", 50, new int[]{2, 5, 6, 3}, 25, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 2.0F);
@@ -31,5 +34,6 @@ public class TTMaterials {
 
         ThaumcraftMaterials.TOOLMAT_VOID = EnumHelper.addToolMaterial("VOID", 4, 150, 8F, 7, 10).setRepairItem(new ItemStack(ItemsTC.ingots,1,1));
         //+4 damage
+
     }
 }

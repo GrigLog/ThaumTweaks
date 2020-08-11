@@ -32,8 +32,8 @@ public class InfusionTweaks {
                                 .add(Aspect.DEATH, 80)
                                 .add(Aspect.PROTECT, 20),
                         new ItemStack(ItemsTC.fortressHelm, 1, 32767),
-                        "plateIron",
                         "leather",
+                        "plateIron",
                         new ItemStack(Items.SKULL, 1, 1),
                         "plateIron"));
 
@@ -44,8 +44,8 @@ public class InfusionTweaks {
                                 .add(Aspect.LIFE, 80)
                                 .add(Aspect.PROTECT, 20),
                         new ItemStack(ItemsTC.fortressHelm, 1, 32767),
-                        "plateIron",
                         "leather",
+                        "plateIron",
                         new ItemStack(Items.GHAST_TEAR),
                         "plateIron"));
 
@@ -56,8 +56,8 @@ public class InfusionTweaks {
                                 .add(Aspect.LIFE, 80)
                                 .add(Aspect.PROTECT, 20),
                         new ItemStack(ItemsTC.fortressHelm, 1, 32767),
-                        "plateIron",
                         "leather",
+                        "plateIron",
                         new ItemStack(BlocksTC.shimmerleaf),
                         "plateIron"));
 
