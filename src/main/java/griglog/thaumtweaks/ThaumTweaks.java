@@ -1,5 +1,8 @@
 package griglog.thaumtweaks;
 
+import griglog.thaumtweaks.crafts.ArcaneTweaks;
+import griglog.thaumtweaks.crafts.CruicibleTweaks;
+import griglog.thaumtweaks.crafts.InfusionTweaks;
 import griglog.thaumtweaks.handlers.TTHandler;
 import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraft.client.Minecraft;
@@ -39,9 +42,9 @@ public class ThaumTweaks
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) throws NoSuchMethodException {
-        for (EnumInfusionEnchantment e: EnumInfusionEnchantment.values()) {
-            e.maxLevel++;
-        }
+        InfusionTweaks.override();
+        CruicibleTweaks.override();
+        ArcaneTweaks.override();
     }
 
 

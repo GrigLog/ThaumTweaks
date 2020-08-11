@@ -7,7 +7,6 @@
     "armor.VoidRobeMixin",
     "armor.VoidArmorMixin",
     "armor.FortressArmorMixin",
-    "ThaumApiMixin",
     "PrimalCrusherMixin",
     "events.PlayerEventsMixin",
     "events.EntityEventsMixin"

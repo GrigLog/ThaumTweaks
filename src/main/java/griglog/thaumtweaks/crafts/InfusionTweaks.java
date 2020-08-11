@@ -23,9 +23,8 @@ import thaumcraft.common.lib.enchantment.EnumInfusionEnchantment;
 import java.util.HashMap;
 
 public class InfusionTweaks {
-    public static HashMap<ResourceLocation, InfusionRecipe> map = new HashMap<ResourceLocation, InfusionRecipe>();
-    static {
-        map.put(new ResourceLocation("thaumcraft:MaskAngryGhost"),
+    public static void override() {
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:MaskAngryGhost"),
                 new InfusionRecipe("FORTRESSMASK", new Object[]{"mask", new NBTTagInt(1)}, 8,
                         (new AspectList())
                                 .add(Aspect.ENTROPY, 80)
@@ -37,7 +36,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.SKULL, 1, 1),
                         "plateIron"));
 
-        map.put(new ResourceLocation("thaumcraft:MaskSippingFiend"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:MaskSippingFiend"),
                 new InfusionRecipe("FORTRESSMASK", new Object[]{"mask", new NBTTagInt(2)}, 8,
                         (new AspectList())
                                 .add(Aspect.UNDEAD, 80)
@@ -49,7 +48,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.GHAST_TEAR),
                         "plateIron"));
 
-        map.put(new ResourceLocation("thaumcraft:MaskGrinningDevil"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:MaskGrinningDevil"),
                 new InfusionRecipe("FORTRESSMASK", new Object[]{"mask", new NBTTagInt(0)}, 8,
                         (new AspectList())
                                 .add(Aspect.MIND, 80)
@@ -61,7 +60,7 @@ public class InfusionTweaks {
                         new ItemStack(BlocksTC.shimmerleaf),
                         "plateIron"));
 
-        map.put(new ResourceLocation("thaumcraft:PrimalCrusher"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:PrimalCrusher"),
                 new InfusionRecipe("PRIMALCRUSHER", new ItemStack(ItemsTC.primalCrusher), 6,
                         (new AspectList())
                                 .add(Aspect.TOOL, 100)
@@ -75,7 +74,7 @@ public class InfusionTweaks {
                         Ingredient.fromItem(ItemsTC.elementalShovel)));
 
 
-        map.put(new ResourceLocation("thaumcraft:VoidSiphon"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VoidSiphon"),
                 new InfusionRecipe("VOIDSIPHON", new ItemStack(BlocksTC.voidSiphon), 7,
                         (new AspectList())
                                 .add(Aspect.ELDRITCH, 90)
@@ -93,7 +92,7 @@ public class InfusionTweaks {
         ItemStack charm2 = new ItemStack(ItemsTC.charmVerdant).copy();
         charm2.setTagCompound(nbt2);
 
-        map.put(new ResourceLocation("thaumcraft:VoidRobeHelm"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VoidRobeHelm"),
                 new InfusionRecipe("VOIDROBEARMOR", new ItemStack(ItemsTC.voidRobeHelm), 6,
                         (new AspectList())
                                 .add(Aspect.PROTECT, 75)
@@ -114,7 +113,7 @@ public class InfusionTweaks {
         ItemStack charm = new ItemStack(ItemsTC.charmVerdant).copy();
         charm.setTagCompound(nbt);
 
-        map.put(new ResourceLocation("thaumcraft:VoidRobeChest"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VoidRobeChest"),
                 new InfusionRecipe("VOIDROBEARMOR",
                         new ItemStack(ItemsTC.voidRobeChest), 6,
                         (new AspectList())
@@ -130,7 +129,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.fabric),
                         "leather"));
 
-        map.put(new ResourceLocation("thaumcraft:VoidRobeLegs"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VoidRobeLegs"),
                 new InfusionRecipe("VOIDROBEARMOR",
                         new ItemStack(ItemsTC.voidRobeLegs), 6,
                         (new AspectList())
@@ -146,7 +145,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.fabric),
                         "leather"));
 
-        map.put(new ResourceLocation("thaumcraft:VerdantHeart"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VerdantHeart"),
                 new InfusionRecipe("VERDANTCHARMS", new ItemStack(ItemsTC.charmVerdant), 5,
                         (new AspectList())
                                 .add(Aspect.LIFE, 60)
@@ -157,7 +156,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.MILK_BUCKET),
                         ThaumcraftApiHelper.makeCrystal(Aspect.PLANT)));
 
-        map.put(new ResourceLocation("thaumcraft:VerdantHeartLife"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VerdantHeartLife"),
                 new InfusionRecipe("VERDANTCHARMS", new Object[]{"type", new NBTTagByte((byte)1)}, 5,
                         (new AspectList())
                                 .add(Aspect.LIFE, 80)
@@ -168,7 +167,7 @@ public class InfusionTweaks {
                         ThaumcraftApiHelper.makeCrystal(Aspect.MAN)));
 
 
-        map.put(new ResourceLocation("thaumcraft:VerdantHeartSustain"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VerdantHeartSustain"),
                 new InfusionRecipe("VERDANTCHARMS", new Object[]{"type", new NBTTagByte((byte)2)}, 5,
                         (new AspectList())
                                 .add(Aspect.DESIRE, 80)
@@ -178,7 +177,7 @@ public class InfusionTweaks {
                         ThaumcraftApiHelper.makeCrystal(Aspect.DESIRE),
                         ThaumcraftApiHelper.makeCrystal(Aspect.MAN)));
 
-        map.put(new ResourceLocation("thaumcraft:BootsTraveller"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:BootsTraveller"),
                 new InfusionRecipe("BOOTSTRAVELLER", new ItemStack(ItemsTC.travellerBoots), 1,
                         (new AspectList())
                                 .add(Aspect.FLIGHT, 50)
@@ -189,7 +188,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.FEATHER),
                         new ItemStack(Items.FISH, 1, 32767)));
 
-        map.put(new ResourceLocation("thaumcraft:LampGrowth"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:LampGrowth"),
                 new InfusionRecipe("LAMPGROWTH", new ItemStack(BlocksTC.lampGrowth), 4,
                         (new AspectList())
                                 .add(Aspect.PLANT, 20)
@@ -201,7 +200,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.GOLD_INGOT),
                         ConfigItems.EARTH_CRYSTAL));
 
-        map.put(new ResourceLocation("thaumcraft:LampFertility"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:LampFertility"),
                 new InfusionRecipe("LAMPFERTILITY", new ItemStack(BlocksTC.lampFertility), 4,
                         (new AspectList())
                                 .add(Aspect.BEAST, 20)
@@ -213,7 +212,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.GOLD_INGOT),
                         ConfigItems.FIRE_CRYSTAL));
 
-        map.put(new ResourceLocation("thaumcraft:Mirror"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:Mirror"),
                 new InfusionRecipe("MIRROR", new ItemStack(BlocksTC.mirror), 1,
                         (new AspectList())
                                 .add(Aspect.MOTION, 25)
@@ -226,7 +225,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.ENDER_PEARL),
                         new ItemStack(Items.ENDER_PEARL)));
 
-        map.put(new ResourceLocation("thaumcraft:MirrorHand"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:MirrorHand"),
                 new InfusionRecipe("MIRRORHAND", new ItemStack(ItemsTC.handMirror), 5,
                         (new AspectList())
                                 .add(Aspect.TOOL, 40)
@@ -237,7 +236,7 @@ public class InfusionTweaks {
                         "stickWood",
                         "ingotBrass"
                        ));
-        map.put(new ResourceLocation("thaumcraft:MirrorEssentia"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:MirrorEssentia"),
                 new InfusionRecipe("MIRRORESSENTIA", new ItemStack(BlocksTC.mirrorEssentia), 2,
                         (new AspectList())
                                 .add(Aspect.MOTION, 25)
@@ -250,7 +249,7 @@ public class InfusionTweaks {
                         new ItemStack(Items.ENDER_PEARL),
                         new ItemStack(Items.ENDER_PEARL)));
 
-        map.put(new ResourceLocation("thaumcraft:ArcaneBore"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:ArcaneBore"),
                 new InfusionRecipe("ARCANEBORE", new ItemStack(ItemsTC.turretPlacer, 1, 2), 4,
                         (new AspectList())
                                 .add(Aspect.ENERGY, 50)
@@ -267,7 +266,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.morphicResonator),
                         new ItemStack(BlocksTC.logGreatwood)));
 
-        map.put(new ResourceLocation("thaumcraft:VisAmulet"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:VisAmulet"),
                 new InfusionRecipe("VISAMULET",
                         new ItemStack(ItemsTC.amuletVis, 1, 1), 6,
                         (new AspectList())
@@ -286,7 +285,7 @@ public class InfusionTweaks {
         ItemStack in = new ItemStack(ItemsTC.elementalPick);
         EnumInfusionEnchantment.addInfusionEnchantment(in, EnumInfusionEnchantment.REFINING, 1);
         EnumInfusionEnchantment.addInfusionEnchantment(in, EnumInfusionEnchantment.SOUNDING, 2);
-        map.put(new ResourceLocation("thaumcraft:ElementalPick"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:ElementalPick"),
                 new InfusionRecipe("ELEMENTALTOOLS", in, 1,
                         (new AspectList())
                                 .add(Aspect.FIRE, 60)
@@ -299,7 +298,7 @@ public class InfusionTweaks {
 
         ItemStack isESW = new ItemStack(ItemsTC.elementalSword);
         EnumInfusionEnchantment.addInfusionEnchantment(isESW, EnumInfusionEnchantment.ARCING, 2);
-        map.put(new ResourceLocation("thaumcraft:ElementalSword"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:ElementalSword"),
                 new InfusionRecipe("ELEMENTALTOOLS", isESW, 1,
                         (new AspectList())
                                 .add(Aspect.AIR, 60)
@@ -310,7 +309,7 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.nuggets, 1, 10),
                         new ItemStack(BlocksTC.plankGreatwood)));
 
-        map.put(new ResourceLocation("thaumcraft:ElementalHoe"),
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:ElementalHoe"),
                 new InfusionRecipe("ELEMENTALTOOLS",
                         new ItemStack(ItemsTC.elementalHoe), 1,
                         (new AspectList())
