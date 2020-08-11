@@ -26,7 +26,10 @@ public class TTMaterials {
         //regen 2 effect, debuff clearing, 75% kb resist, 4x durability, 4x repairing, recalculated ratio (more), consumes vis
 
 
+        ThaumcraftMaterials.TOOLMAT_ELEMENTAL = EnumHelper.addToolMaterial("THAUMIUM_ELEMENTAL", 3, 1500, 9.0F, 5.0F, 20).setRepairItem(new ItemStack(ItemsTC.ingots));
+        //+2 damage
 
         ThaumcraftMaterials.TOOLMAT_VOID = EnumHelper.addToolMaterial("VOID", 4, 150, 8F, 7, 10).setRepairItem(new ItemStack(ItemsTC.ingots,1,1));
+        //+4 damage
     }
 }
