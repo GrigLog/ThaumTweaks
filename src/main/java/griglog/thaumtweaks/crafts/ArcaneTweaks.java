@@ -16,7 +16,7 @@ public class ArcaneTweaks{
     public static void override() {
         ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("thaumcraft:AlchemicalConstruct"),
                 new ShapedArcaneRecipe(defaultGroup, "TUBES",
-                        90,
+                        75,
                         (new AspectList())
                                 .add(Aspect.ORDER, 1)
                                 .add(Aspect.ENTROPY, 1),

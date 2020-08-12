@@ -3,11 +3,7 @@ package griglog.thaumtweaks;
 import griglog.thaumtweaks.crafts.ArcaneTweaks;
 import griglog.thaumtweaks.crafts.CruicibleTweaks;
 import griglog.thaumtweaks.crafts.InfusionTweaks;
-import griglog.thaumtweaks.handlers.TTHandler;
 import griglog.thaumtweaks.items.TTMaterials;
-import net.minecraft.client.Minecraft;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,7 +11,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import thaumcraft.common.lib.enchantment.EnumInfusionEnchantment;
 
 import java.io.IOException;
 
@@ -36,8 +31,7 @@ public class ThaumTweaks
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
     }
 
     @EventHandler

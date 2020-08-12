@@ -1,42 +1,26 @@
-package griglog.thaumtweaks.handlers;
+package griglog.thaumtweaks.events;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.items.ItemsTC;
-import thaumcraft.codechicken.lib.raytracer.RayTracer;
-import thaumcraft.common.items.tools.ItemPrimalCrusher;
-import thaumcraft.common.lib.enchantment.EnumInfusionEnchantment;
-import thaumcraft.common.lib.events.ToolEvents;
 import thaumcraft.common.lib.utils.BlockUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
 @Mod.EventBusSubscriber
-public class ToolHandler {
+public class ToolEvents {
     public static HashMap<Integer, EnumFacing> lastFaceClicked;
     static {
         try {
-            Field f = ToolEvents.class.getDeclaredField("lastFaceClicked");
+            Field f = thaumcraft.common.lib.events.ToolEvents.class.getDeclaredField("lastFaceClicked");
             f.setAccessible(true);
             lastFaceClicked = (HashMap<Integer, EnumFacing>) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {

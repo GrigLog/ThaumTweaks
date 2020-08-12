@@ -9,7 +9,9 @@
     "armor.FortressArmorMixin",
     "PrimalCrusherMixin",
     "events.PlayerEventsMixin",
-    "events.EntityEventsMixin"
+    "events.EntityEventsMixin",
+    "events.ToolEventsMixin",
+    "blocks.OreMixin"
   ],
   "client": [],
   "server": []

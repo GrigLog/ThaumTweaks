@@ -321,6 +321,28 @@ public class InfusionTweaks {
                         new ItemStack(ItemsTC.nuggets, 1, 10),
                         new ItemStack(BlocksTC.plankGreatwood)));
 
+        ThaumcraftApi.addInfusionCraftingRecipe(new ResourceLocation("thaumcraft:voidingot"),
+                new InfusionRecipe("BASEELDRITCH",
+                        new ItemStack(ItemsTC.ingots, 1, 1), 4,
+                        (new AspectList())
+                                .add(Aspect.FLUX, 20)
+                                .add(Aspect.DARKNESS, 40)
+                                .add(Aspect.VOID, 20),
+                        new ItemStack(Items.GOLD_INGOT),
+                        new ItemStack(ItemsTC.salisMundus),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.morphicResonator),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.salisMundus),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.morphicResonator),
+                        new ItemStack(ItemsTC.voidSeed),
+                        new ItemStack(ItemsTC.voidSeed)
+                ));
+
 
     }
 }
