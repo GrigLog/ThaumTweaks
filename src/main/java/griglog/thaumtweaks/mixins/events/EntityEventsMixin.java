@@ -191,14 +191,16 @@ public class EntityEventsMixin {
     private static HashMap<Integer, Integer> runicInfo;
     static {
         try {
-            Field f = PlayerEvents.class.getField("lastMaxCharge");
+            Field f = PlayerEvents.class.getDeclaredField("lastMaxCharge");
             f.setAccessible(true);
             lastMaxCharge = (HashMap<Integer, Integer>) f.get(null);
-            f = PlayerEvents.class.getField("runicInfo");
+            f = PlayerEvents.class.getDeclaredField("runicInfo");
             f.setAccessible(true);
             runicInfo = (HashMap<Integer, Integer>) f.get(null);
         }
         catch (NoSuchFieldException | IllegalAccessException e) {
+            for (Field f : PlayerEvents.class.getDeclaredFields())
+                SF.print(f.getName());
             e.printStackTrace();
         }
     }
