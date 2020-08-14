@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.events;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
@@ -18,6 +19,8 @@ public class TTHandler {
 
     @SubscribeEvent()
     public static void playerGotHitBeforeArmor(LivingHurtEvent event) {
+        if (!ThaumTweaks.DEBUG)
+            return;
         Entity target = event.getEntityLiving();
         if (target instanceof EntityPlayer) {
             buffer = "(" + new DecimalFormat("#.###").format(event.getAmount()) + " : ";
@@ -26,6 +29,8 @@ public class TTHandler {
 
     @SubscribeEvent()
     public static void playerGotHitAfterArmor(LivingDamageEvent event) {
+        if (!ThaumTweaks.DEBUG)
+            return;
         Entity target = event.getEntityLiving();
         if (target instanceof EntityPlayer) {
             buffer += new DecimalFormat("#.###").format(event.getAmount()) + ") ";

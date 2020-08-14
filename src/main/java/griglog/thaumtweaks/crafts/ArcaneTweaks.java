@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.crafts;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.ThaumcraftApi;
@@ -7,6 +8,7 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.blocks.BlocksTC;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
+import thaumcraft.api.items.ItemsTC;
 import thaumcraft.common.config.ConfigRecipes;
 
 import java.lang.reflect.Field;
@@ -25,6 +27,25 @@ public class ArcaneTweaks{
                         'W', new ItemStack(BlocksTC.plankGreatwood),
                         'T', new ItemStack(BlocksTC.tube),
                         'I', "plateIron"));
+
+        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("thaumcraft:workbenchcharger"),
+                new ShapedArcaneRecipe(defaultGroup, "WORKBENCHCHARGER", 400,
+                        (new AspectList()).add(Aspect.AIR, 2)
+                                .add(Aspect.ORDER, 2),
+                        new ItemStack(BlocksTC.arcaneWorkbenchCharger),
+                        " R ", "W W", "I I",
+                        'I', "ingotIron",
+                        'R', new ItemStack(ItemsTC.visResonator),
+                        'W', new ItemStack(BlocksTC.plankGreatwood)));
+
+
+        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("thaumcraft:ApprenticesRing"),
+                new ShapedArcaneRecipe(defaultGroup, "UNLOCKINFUSION", 200,
+                        (AspectList)null,
+                        new ItemStack(ItemsTC.baubles, 1, 3),
+                        " BR", "B B", " B ",
+                        'R', new ItemStack(ItemsTC.morphicResonator),
+                        'B', "ingotBrass"));
 
     }
 

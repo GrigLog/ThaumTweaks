@@ -90,6 +90,10 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
         return true;  //have no clue why azanor didnt use it
     }
 
+    public int getVisDiscount(ItemStack stack, EntityPlayer player) {
+        return (this.armorType == EntityEquipmentSlot.HEAD ? 8 : 7);
+    }
+
     public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
         return 480;
     }
