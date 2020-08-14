@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins;
+package griglog.thaumtweaks.mixins.items;
 
 import com.google.common.eventbus.Subscribe;
 import griglog.thaumtweaks.SF;

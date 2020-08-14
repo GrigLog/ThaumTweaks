@@ -78,11 +78,11 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
         double ratio = this.damageReduceAmount * 0.04;  //80%
         if (source.isMagicDamage() || source.isUnblockable()) {
             priority = 1;
-            ratio = this.damageReduceAmount * 0.035; //70%
+            ratio = this.damageReduceAmount * 0.0325; //65%
         }
 
         ratio += tryAddRatio(player, armor, damage);
-        //85% / 75% if enough vis
+        //86% / 71% if enough vis
         return new ISpecialArmor.ArmorProperties(priority, ratio, armor.getMaxDamage() + 1 - armor.getItemDamage());
     }
 
@@ -131,7 +131,7 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
         if (RechargeHelper.getChargePercentage(is, player) > 0.75 &&
                 RechargeHelper.consumeCharge(is, player,
                         Math.round((float)(Math.log(damage) / Math.log(2)))))
-            return (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02);
+            return 0.02;
         return 0;
     }
 
