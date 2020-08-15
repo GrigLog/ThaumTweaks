@@ -2,9 +2,12 @@ package griglog.thaumtweaks.events;
 
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.ThaumTweaks;
+import griglog.thaumtweaks.crafts.RecipeMergePearls;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +19,11 @@ import java.text.DecimalFormat;
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class TTHandler {
     static String buffer;
+
+    @SubscribeEvent
+    public static void registerCrafts(RegistryEvent.Register<IRecipe> event) {
+        event.getRegistry().register(new RecipeMergePearls());
+    }
 
     @SubscribeEvent()
     public static void playerGotHitBeforeArmor(LivingHurtEvent event) {
