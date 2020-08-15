@@ -16,7 +16,7 @@ public class SF {  //SomeFuncs
     }
 
     public static void print(String prefix, String text) {
-        ThaumTweaks.LOGGER.info("!!!" + prefix.toUpperCase() + " " + text);
+        ThaumTweaks.LOGGER.info("!!!" + prefix + " " + text);
     }
 
     public static void print(String prefix) {

@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.crafts;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -47,15 +48,16 @@ public class ArcaneTweaks{
                         'R', new ItemStack(ItemsTC.morphicResonator),
                         'B', "ingotBrass"));
 
-    }
+        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("thaumcraft:MatrixMotion"),
+                new ShapedArcaneRecipe(defaultGroup, "INFUSIONBOOST", 3000,
+                        (new AspectList()).add(Aspect.AIR, 1).add(Aspect.ORDER, 1),
+                        new ItemStack(BlocksTC.matrixSpeed), "SNS", "NGN", "SNS", 'S', new ItemStack(BlocksTC.stoneArcane), 'N', "nitor", 'G', new ItemStack(Blocks.DIAMOND_BLOCK)));
 
-    /*static {
-        try {
-            Field f = ConfigRecipes.class.getField("defaultGroup");
-            f.setAccessible(true);
-            defaultGroup = (ResourceLocation) f.get(null);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }*/
+        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("thaumcraft:MatrixCost"),
+                new ShapedArcaneRecipe(defaultGroup, "INFUSIONBOOST", 1500,
+                        (new AspectList()).add(Aspect.AIR, 1).add(Aspect.WATER, 1).add(Aspect.ENTROPY, 1),
+                        new ItemStack(BlocksTC.matrixCost), "SAS", "AGA", "SAS", 'S', new ItemStack(BlocksTC.stoneArcane), 'A', new ItemStack(ItemsTC.alumentum), 'G', new ItemStack(Blocks.DIAMOND_BLOCK)));
+
+
+    }
 }

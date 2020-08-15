@@ -9,6 +9,7 @@
     "armor.FortressArmorMixin",
     "armor.VoidArmorMixin",
     "armor.VoidRobeMixin",
+    "blocks.MatrixMixin",
     "blocks.OreMixin",
     "events.EntityEventsMixin",
     "events.PlayerEventsMixin",
