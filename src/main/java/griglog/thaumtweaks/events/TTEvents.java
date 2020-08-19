@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.text.DecimalFormat;
 
 @Mod.EventBusSubscriber(Side.CLIENT)
-public class TTHandler {
+public class TTEvents {
     static String buffer;
 
     @SubscribeEvent
