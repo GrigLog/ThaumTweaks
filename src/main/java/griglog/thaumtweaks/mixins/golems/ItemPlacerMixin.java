@@ -58,7 +58,8 @@ public class ItemPlacerMixin extends ItemTCBase {
                     IPlayerKnowledge ownerBrains = player.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
                     if (golemBrains != null && ownerBrains != null){
                         for (String k : ownerBrains.getResearchList()) {
-                            golemBrains.addResearch(k);
+                            if (!golemBrains.isResearchKnown(k))
+                                golemBrains.addResearch(k);
                         }
                     }
 

@@ -17,7 +17,8 @@
     "golems.GolemHelperMixin",
     "golems.ItemPlacerMixin",
     "items.PrimalCrusherMixin",
-    "items.VisAmuletMixin"
+    "items.VisAmuletMixin",
+    "items.VoidAxeMixin"
   ],
   "client": [],
   "server": []
