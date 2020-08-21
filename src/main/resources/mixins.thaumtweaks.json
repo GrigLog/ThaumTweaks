@@ -15,6 +15,7 @@
     "events.PlayerEventsMixin",
     "events.ToolEventsMixin",
     "golems.GolemHelperMixin",
+    "golems.ItemPlacerMixin",
     "items.PrimalCrusherMixin",
     "items.VisAmuletMixin"
   ],

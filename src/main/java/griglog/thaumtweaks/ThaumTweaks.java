@@ -31,7 +31,7 @@ public class ThaumTweaks
     public static final boolean DEBUG = false;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event) throws IOException, NoSuchMethodException {
+    public void preInit(FMLPreInitializationEvent event){
         TTMaterials.overrideMaterials();
     }
 
@@ -40,7 +40,7 @@ public class ThaumTweaks
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event) throws NoSuchMethodException {
+    public void postInit(FMLPostInitializationEvent event){
         InfusionTweaks.override();
         CruicibleTweaks.override();
         ArcaneTweaks.override();

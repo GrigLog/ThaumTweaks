@@ -2,12 +2,14 @@ package griglog.thaumtweaks.mixins.events;
 
 import baubles.api.BaublesApi;
 import griglog.thaumtweaks.SF;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,6 +24,8 @@ import thaumcraft.api.items.ItemsTC;
 import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.common.config.ModConfig;
+import thaumcraft.common.golems.EntityThaumcraftGolem;
+import thaumcraft.common.lib.capabilities.PlayerKnowledge;
 import thaumcraft.common.lib.events.PlayerEvents;
 import thaumcraft.common.world.aura.AuraHandler;
 
@@ -139,7 +143,6 @@ public class PlayerEventsMixin {
         return equip;
     }
 
-
     private static void addTheories(EntityPlayer player, double d) {
         float r = player.getRNG().nextFloat();
         String[] s;
@@ -152,6 +155,13 @@ public class PlayerEventsMixin {
             s = (String[])ResearchCategories.researchCategories.keySet().toArray(new String[0]);
             cat = s[player.getRNG().nextInt(s.length)];
             ThaumcraftApi.internalMethods.addKnowledge(player, IPlayerKnowledge.EnumKnowledgeType.OBSERVATION, ResearchCategories.getResearchCategory(cat), THEORY_MULT);
+        }
+    }
+
+    @Inject(method = "attachCapabilitiesPlayer", at=@At("HEAD"), remap=false)
+    private static void attachCapabilitiesGolem(AttachCapabilitiesEvent<Entity> event, CallbackInfo ci) {
+        if (event.getObject() instanceof EntityThaumcraftGolem) {
+            event.addCapability(PlayerKnowledge.Provider.NAME, new PlayerKnowledge.Provider());
         }
     }
 

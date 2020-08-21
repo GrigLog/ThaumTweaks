@@ -49,15 +49,11 @@ public class GolemHelperMixin {
         fp.setWorld(world);
 
         if (golem instanceof EntityThaumcraftGolem) {
-            UUID ownerId = ((EntityThaumcraftGolem) golem).getOwnerId();
-            if (ownerId != null) {
-                EntityPlayer player = getPlayerFromUsername(UsernameCache.getLastKnownUsername(ownerId));
-                if (player != null) {
-                    IPlayerKnowledge fakeBrains = ThaumcraftCapabilities.getKnowledge(fp);
-                    IPlayerKnowledge brains = ThaumcraftCapabilities.getKnowledge(player);
-                    for (String k : brains.getResearchList()) {
-                        fakeBrains.addResearch(k);
-                    }
+            IPlayerKnowledge fakeBrains = ThaumcraftCapabilities.getKnowledge(fp);
+            IPlayerKnowledge golemBrains = ((EntityThaumcraftGolem)golem).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
+            if (golemBrains != null) {
+                for (String k : golemBrains.getResearchList()) {
+                    fakeBrains.addResearch(k);
                 }
             }
         }
