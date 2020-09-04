@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins.blocks;
+package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +17,8 @@ import java.lang.reflect.Field;
 
 
 @Mixin(SlotCraftingArcaneWorkbench.class)
-public abstract class ArcaneReultSlotMixin extends Slot {
-    public ArcaneReultSlotMixin(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+public abstract class SlotArcaneResultMixin extends Slot {
+    public SlotArcaneResultMixin(IInventory inventoryIn, int index, int xPosition, int yPosition) {
         super(inventoryIn, index, xPosition, yPosition);
     }
 

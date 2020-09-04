@@ -1,7 +1,8 @@
-package griglog.thaumtweaks.mixins.blocks;
+package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.ThaumTweaks;
+import griglog.thaumtweaks.mixins.blocks.InventoryArcaneResult;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.*;
@@ -9,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.tileentity.TileEntity;
@@ -42,13 +44,15 @@ import java.util.HashMap;
 
 
 @Mixin(TileArcaneWorkbench.class)
-public abstract class ArcaneWorkbenchMixin extends TileThaumcraft implements ISidedInventory {
+public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedInventory {
     @Shadow public abstract void spendAura(int vis);
 
     @Shadow public InventoryArcaneWorkbench inventoryCraft;
     public InventoryArcaneResult inventoryResult;
     private static final int[] SLOTS_GRID = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     private static final int[] SLOTS_CRYSTALS = new int[]{9, 10, 11, 12, 13, 14};
+    private static final EnumFacing[] FACES_GRID = new EnumFacing[] {EnumFacing.UP, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
+    private static final EnumFacing[] FACES_CRYSTALS = new EnumFacing[] {EnumFacing.SOUTH};
     private static final Aspect[] aspectGrid = new Aspect[] {Aspect.AIR, Aspect.FIRE, Aspect.WATER, Aspect.EARTH, Aspect.ORDER, Aspect.ENTROPY};
     private static final HashMap<Aspect, Integer> aspectSlots = new HashMap<>();
     public boolean preview = true;  //if true, hoppers cant extract result from exit slot
@@ -58,15 +62,17 @@ public abstract class ArcaneWorkbenchMixin extends TileThaumcraft implements ISi
         for (int i = 0; i < aspectGrid.length; i++)
             aspectSlots.put(aspectGrid[i], i);
         try {
-            container = InventoryCrafting.class.getDeclaredField("eventHandler");
+            container = InventoryCrafting.class.getDeclaredField((boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment") ?
+                            "eventHandler": "field_70465_c");
             container.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
     }
 
-    @Inject(method="<init>", at=@At("RETURN"), remap=false)
+    @Inject(method="<init>", at=@At("RETURN"), remap=true)
     void addResultSlot(CallbackInfo ci) {
+        ThaumTweaks.LOGGER.info("start");
         try {
             inventoryResult = new InventoryArcaneResult(this, (Container) container.get(inventoryCraft));
         }
@@ -139,8 +145,10 @@ public abstract class ArcaneWorkbenchMixin extends TileThaumcraft implements ISi
             }
         }
 
-        if (ThaumTweaks.DEBUG)
+        if (ThaumTweaks.DEBUG) {
             ThaumTweaks.LOGGER.info(preview);
+            ThaumTweaks.LOGGER.info(itemstack.getUnlocalizedName() + " " + itemstack.getCount());
+        }
         if (powered) {
             if (arecipe != null) {
                 ItemStack current = inventoryResult.getStackInSlot(0);
@@ -213,22 +221,29 @@ public abstract class ArcaneWorkbenchMixin extends TileThaumcraft implements ISi
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
-        if (side == EnumFacing.UP)
-            return SLOTS_GRID;
-        else if (side == EnumFacing.DOWN)
-            return inventoryResult.getSlotsForFace(side);
-        else
-            return SLOTS_CRYSTALS;
+        for (EnumFacing f: FACES_GRID) {
+            if (side == f)
+                return SLOTS_GRID;
+        }
+        for (EnumFacing f: FACES_CRYSTALS) {
+            if (side == f)
+                return SLOTS_CRYSTALS;
+        }
+        return inventoryResult.getSlotsForFace(side);
     }
 
     @Override
     public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing side) {
-        if (side == EnumFacing.UP)
-            return getStackInSlot(index).getCount() + itemStackIn.getCount() <= getInventoryStackLimit();
-        else if (side == EnumFacing.DOWN)
-            return inventoryResult.canInsertItem(index, itemStackIn, side);
-        else
-            return canInsertCrystal(index, itemStackIn);  //looks like this one is callid twice, but its inevitable
+        for (EnumFacing f: FACES_GRID) {
+            if (side == f)
+                return getStackInSlot(index).getCount() + itemStackIn.getCount() <= getInventoryStackLimit();
+        }
+        for (EnumFacing f: FACES_CRYSTALS) {
+            if (side == f)
+                return canInsertCrystal(index, itemStackIn);  //looks like this one is callid twice, but its inevitable
+        }
+        return inventoryResult.canInsertItem(index, itemStackIn, side);
+
     }
 
     @Override

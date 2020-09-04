@@ -1,8 +1,10 @@
-package griglog.thaumtweaks.mixins.blocks;
+package griglog.thaumtweaks.mixins.blocks.workbench;
 
+import griglog.thaumtweaks.mixins.blocks.InventoryArcaneResult;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +30,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 @Mixin(ContainerArcaneWorkbench.class)
-public abstract class ArcaneContainerMixin extends Container {
+public abstract class ContainerArcaneMixin extends Container {
 
     @Inject(method = "<init>", at=@At("RETURN"), remap = false)
     void adjustConstructor(InventoryPlayer invPlayer, TileArcaneWorkbench e, CallbackInfo ci) throws IllegalAccessException, NoSuchFieldException {
@@ -91,7 +93,8 @@ public abstract class ArcaneContainerMixin extends Container {
     private static Method doCrafting;
     static {
         try {
-            slotInventory = Slot.class.getDeclaredField("inventory");
+            slotInventory = Slot.class.getDeclaredField((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") ?
+                    "inventory": "field_75224_c");
             Field mods = slotInventory.getClass().getDeclaredField("modifiers");
             mods.setAccessible(true);
             mods.setInt(slotInventory, slotInventory.getModifiers() & ~Modifier.FINAL);

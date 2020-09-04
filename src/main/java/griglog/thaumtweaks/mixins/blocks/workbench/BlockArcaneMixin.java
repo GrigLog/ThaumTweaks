@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins.blocks;
+package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 @Mixin(BlockArcaneWorkbench.class)
-public class ArcaneBlockMixin extends BlockTCDevice {
-    public ArcaneBlockMixin(Material mat, Class tc, String name) {
+public class BlockArcaneMixin extends BlockTCDevice {
+    public BlockArcaneMixin(Material mat, Class tc, String name) {
         super(mat, tc, name);
     }
 
