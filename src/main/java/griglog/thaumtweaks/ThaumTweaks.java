@@ -6,6 +6,8 @@ import griglog.thaumtweaks.crafts.InfusionTweaks;
 import griglog.thaumtweaks.crafts.RecipeMergePearls;
 import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -24,7 +26,7 @@ public class ThaumTweaks
 {
     public static final String MODID = "thaumtweaks";
     public static final String NAME = "ThaumTweaks";
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.1.2";
     public static final String MC_VERSION = "[1.12.2]";
 
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);

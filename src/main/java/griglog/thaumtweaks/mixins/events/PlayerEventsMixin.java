@@ -158,12 +158,6 @@ public class PlayerEventsMixin {
         }
     }
 
-    @Inject(method = "attachCapabilitiesPlayer", at=@At("HEAD"), remap=false)
-    private static void attachCapabilitiesGolem(AttachCapabilitiesEvent<Entity> event, CallbackInfo ci) {
-        if (event.getObject() instanceof EntityThaumcraftGolem) {
-            event.addCapability(PlayerKnowledge.Provider.NAME, new PlayerKnowledge.Provider());
-        }
-    }
 
     @Shadow
     public static int getRunicCharge(ItemStack itemStack) {

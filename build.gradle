@@ -20,7 +20,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = "0.0.1"
+ext.config = parseConfig(file('build.properties'))
+
+version = "${config.version}"
 group = "com.griglog.thaumtweaks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "thaumtweaks"
 
@@ -90,5 +92,17 @@ processResources {
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+def parseConfig(File config) {
+    if(config.exists()){
+        config.withReader {
+            def prop = new Properties()
+            prop.load(it)
+            return (new ConfigSlurper().parse(prop))
+        }
+    } else {
+        return null
     }
 }
