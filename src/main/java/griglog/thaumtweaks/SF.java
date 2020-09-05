@@ -1,11 +1,16 @@
 package griglog.thaumtweaks;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
-import org.objectweb.asm.Type;
-
-import java.lang.reflect.Method;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
+import thaumcraft.api.capabilities.IPlayerKnowledge;
+import thaumcraft.api.capabilities.ThaumcraftCapabilities;
+import java.util.UUID;
 
 public class SF {  //SomeFuncs
     public static void print(String prefix, String text) {
@@ -20,5 +25,29 @@ public class SF {  //SomeFuncs
         GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
         TextComponentString msg = new TextComponentString(s);
         chat.printChatMessage(msg);
+    }
+
+    public static FakePlayer getFake(WorldServer w) {
+        return new FakePlayer(w, new GameProfile(new UUID(0, 0), ""));
+    }
+
+    public static void copyKnowledge(Object a, Object b) {
+        IPlayerKnowledge aBrains = null, bBrains = null;
+        if (a instanceof EntityLivingBase)
+            aBrains = ((EntityLivingBase) a).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
+        else if (a instanceof TileEntity)
+            aBrains = ((TileEntity) a).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
+
+        if (b instanceof EntityLivingBase)
+            bBrains = ((EntityLivingBase) b).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
+        else if (b instanceof TileEntity)
+            bBrains = ((TileEntity) b).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
+
+        if (aBrains != null && bBrains != null) {
+            for (String k : aBrains.getResearchList()) {
+                if (!bBrains.isResearchKnown(k))
+                    bBrains.addResearch(k);
+            }
+        }
     }
 }

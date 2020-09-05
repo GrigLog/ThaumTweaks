@@ -14,7 +14,7 @@ public class TTContainer extends DummyModContainer {
 
         meta.modId = "thaumtweaks_core";
         meta.name = "ThaumTweaks' Core ";
-        meta.version = ThaumTweaks.VERSION;
+        meta.version = "1.0";
         meta.credits = "GrigLog";
         meta.authorList = ImmutableList.of("GrigLog");
         meta.description = "Coremod to change what should be changed.";

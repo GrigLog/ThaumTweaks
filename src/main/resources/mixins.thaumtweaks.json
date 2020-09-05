@@ -9,7 +9,6 @@
     "armor.FortressArmorMixin",
     "armor.VoidArmorMixin",
     "armor.VoidRobeMixin",
-    "blocks.workbench.BlockArcaneMixin",
     "blocks.workbench.ContainerArcaneMixin",
     "blocks.workbench.SlotArcaneResultMixin",
     "blocks.workbench.TileArcaneMixin",

@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -44,18 +45,22 @@ import java.util.HashMap;
 
 
 @Mixin(TileArcaneWorkbench.class)
-public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedInventory {
+public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedInventory, ITickable {
     @Shadow public abstract void spendAura(int vis);
 
     @Shadow public InventoryArcaneWorkbench inventoryCraft;
     public InventoryArcaneResult inventoryResult;
     private static final int[] SLOTS_GRID = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
     private static final int[] SLOTS_CRYSTALS = new int[]{9, 10, 11, 12, 13, 14};
+    private static final int[] SLOTS_EXIT = new int[]{15, 0, 1, 2, 3, 4, 5, 6, 7, 8};
     private static final EnumFacing[] FACES_GRID = new EnumFacing[] {EnumFacing.UP, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
     private static final EnumFacing[] FACES_CRYSTALS = new EnumFacing[] {EnumFacing.SOUTH};
     private static final Aspect[] aspectGrid = new Aspect[] {Aspect.AIR, Aspect.FIRE, Aspect.WATER, Aspect.EARTH, Aspect.ORDER, Aspect.ENTROPY};
     private static final HashMap<Aspect, Integer> aspectSlots = new HashMap<>();
     public boolean preview = true;  //if true, hoppers cant extract result from exit slot
+    int counter;
+    FakePlayer fake;
+    IArcaneRecipe savedRecipe;
 
     private static Field container;
     static {
@@ -70,9 +75,8 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
         }
     }
 
-    @Inject(method="<init>", at=@At("RETURN"), remap=true)
+    @Inject(method="<init>", at=@At("RETURN"))
     void addResultSlot(CallbackInfo ci) {
-        ThaumTweaks.LOGGER.info("start");
         try {
             inventoryResult = new InventoryArcaneResult(this, (Container) container.get(inventoryCraft));
         }
@@ -84,16 +88,10 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
     public void tryCrafting(World world, EntityPlayer player, Integer windowId) {
         if (world.isRemote)
             return;
-        FakePlayer fake = new FakePlayer((WorldServer)world, player.getGameProfile());
-        IPlayerKnowledge tileBrains = getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-        IPlayerKnowledge playerBrains = fake.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-        if (tileBrains != null && playerBrains != null) {
-            for (String k : playerBrains.getResearchList()) {
-                if (!tileBrains.isResearchKnown(k))
-                    tileBrains.addResearch(k);
-            }
-        }
+        fake = SF.getFake((WorldServer)world);
+        SF.copyKnowledge(this, fake);
         IArcaneRecipe recipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(inventoryCraft, fake);
+        savedRecipe = recipe;
         boolean hasVis = true;
         boolean hasCrystals = true;
         if (recipe != null) {
@@ -120,18 +118,26 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
         }
     }
 
-    public void doCrafting(World world, EntityPlayer player, Integer windowId) {  //sets itemstack to exit slot and tries to give it to player
+    public void doCrafting(World world, EntityPlayer player, Integer windowId) {  //sets itemstack to exit slot
+        if (world.isRemote)
+            return;
         EntityPlayerMP entityplayermp = (EntityPlayerMP)player;
         ItemStack itemstack = ItemStack.EMPTY;
-        IArcaneRecipe arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(inventoryCraft, entityplayermp);
+        IArcaneRecipe arecipe;
+        FakePlayer fake = SF.getFake((WorldServer)world);
+        SF.copyKnowledge(this, fake);
+        arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(inventoryCraft, fake);
+
         boolean powered = world.isBlockPowered(getPos());
+        boolean arecipeFound = false;
         IPlayerKnowledge fakeBrains = getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
         if (arecipe != null && fakeBrains != null
-                && (powered || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(arecipe))
+                && (!powered || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(arecipe))
                 && fakeBrains.isResearchKnown(arecipe.getResearch())) {
             inventoryResult.setRecipeUsed(arecipe);
             itemstack = arecipe.getCraftingResult(inventoryCraft);
-        } else if (!powered) {
+            arecipeFound = true;
+        } else if (powered) {
             InventoryCrafting craftInv = new InventoryCrafting(new ContainerDummy(), 3, 3);
 
             for(int a = 0; a < 9; ++a) {
@@ -145,24 +151,23 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
             }
         }
 
-        if (ThaumTweaks.DEBUG) {
-            ThaumTweaks.LOGGER.info(preview);
-            ThaumTweaks.LOGGER.info(itemstack.getUnlocalizedName() + " " + itemstack.getCount());
-        }
-        if (powered) {
-            if (arecipe != null) {
-                ItemStack current = inventoryResult.getStackInSlot(0);
-                if (preview) {
-                    current.setCount(0);
-                    preview = false;
-                }
-                if (current.getCount() + itemstack.getCount() < current.getMaxStackSize()) {
-                    current.setCount(current.getCount() + itemstack.getCount());
-                    consumeItems(arecipe);
-                }
+        if (!powered && arecipe != null && arecipeFound) {  //was not powered with redstone, craft things
+            ItemStack current = inventoryResult.getStackInSlot(0);
+            int count = current.getCount();
+            if (preview) {
+                count = itemstack.getCount();
+                preview = false;
             }
+            else if (count + itemstack.getCount() < current.getMaxStackSize()) {
+                count += itemstack.getCount();
+            }
+            current = itemstack.copy();
+            current.setCount(count);
+            inventoryResult.setInventorySlotContents(0, current);
+            inventoryResult.markDirty();
+            consumeItems(arecipe);
         }
-        else { //was opened with hands, show craft result?
+        else { //was opened with hands, show craft result
             if (inventoryResult.getStackInSlot(0).isEmpty())
                 preview = true;
             if (preview) {
@@ -194,31 +199,6 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
 
     }
 
-    public void readFromNBT(NBTTagCompound nbtCompound) {
-        super.readFromNBT(nbtCompound);
-        NonNullList<ItemStack> stacks = NonNullList.withSize(this.inventoryCraft.getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(nbtCompound, stacks);
-
-        for(int a = 0; a < stacks.size(); ++a) {
-            this.inventoryCraft.setInventorySlotContents(a, (ItemStack)stacks.get(a));
-        }
-        preview = nbtCompound.getBoolean("preview");
-
-    }
-
-    public NBTTagCompound writeToNBT(NBTTagCompound nbtCompound) {
-        super.writeToNBT(nbtCompound);
-        NonNullList<ItemStack> stacks = NonNullList.withSize(this.inventoryCraft.getSizeInventory(), ItemStack.EMPTY);
-
-        for(int a = 0; a < stacks.size(); ++a) {
-            stacks.set(a, this.inventoryCraft.getStackInSlot(a));
-        }
-
-        ItemStackHelper.saveAllItems(nbtCompound, stacks);
-        nbtCompound.setBoolean("preview", preview);
-        return nbtCompound;
-    }
-
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
         for (EnumFacing f: FACES_GRID) {
@@ -229,7 +209,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
             if (side == f)
                 return SLOTS_CRYSTALS;
         }
-        return inventoryResult.getSlotsForFace(side);
+        return SLOTS_EXIT;
     }
 
     @Override
@@ -265,8 +245,14 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        if (direction == EnumFacing.DOWN)
-            return inventoryResult.canExtractItem(index, stack, direction);
+        if (!world.isBlockPowered(getPos()) && direction == EnumFacing.DOWN){
+            if (index == 15)
+                return inventoryResult.canExtractItem(index, stack, direction);
+            for (int i: SLOTS_GRID) {
+                if (index == i)
+                    return true;
+            }
+        }
         return false;
     }
 
@@ -277,7 +263,39 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ISidedIn
 
     @Override
     public int getSizeInventory() {
-        return inventoryCraft.getSizeInventory() + 1;
+        return 16;
+    }
+
+    @Override
+    public void update() {
+        if (!world.isRemote && ++counter % 10 == 0){
+            tryCrafting(world, SF.getFake((WorldServer)world), null);
+        }
+    }
+
+    public void readFromNBT(NBTTagCompound nbtCompound) {
+        super.readFromNBT(nbtCompound);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(this.inventoryCraft.getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(nbtCompound, stacks);
+
+        for(int a = 0; a < stacks.size(); ++a) {
+            this.inventoryCraft.setInventorySlotContents(a, (ItemStack)stacks.get(a));
+        }
+        preview = nbtCompound.getBoolean("preview");
+
+    }
+
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtCompound) {
+        super.writeToNBT(nbtCompound);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(this.inventoryCraft.getSizeInventory(), ItemStack.EMPTY);
+
+        for(int a = 0; a < stacks.size(); ++a) {
+            stacks.set(a, this.inventoryCraft.getStackInSlot(a));
+        }
+
+        ItemStackHelper.saveAllItems(nbtCompound, stacks);
+        nbtCompound.setBoolean("preview", preview);
+        return nbtCompound;
     }
 
     //the rest of methods are just redirections

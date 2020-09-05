@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.mixins.blocks.workbench;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
