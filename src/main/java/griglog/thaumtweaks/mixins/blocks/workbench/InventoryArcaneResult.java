@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins.blocks;
+package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 
 public class InventoryArcaneResult extends InventoryCraftResult implements ISidedInventory {
-    public final int[] SLOT = new int[] {15};
+    public final int[] SLOT = new int[] {0};
     TileEntity tile;
     public Container eventHandler;
 
