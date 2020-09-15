@@ -16,6 +16,8 @@ public class TTConfig {
     public static RunShield runShield = new RunShield();
     @Config.Name("Armor")
     public static Armor armor = new Armor();
+    @Config.Name("tools")
+    public static Tools tools = new Tools();
 
     public static class General {
         @Config.Name("Tweak crafts")
@@ -71,6 +73,11 @@ public class TTConfig {
         public double fortRatio = 0.7D;
         @Config.Name("Fortress armor's magic damage reduction")
         public double fortMagicRatio = 0.5D;
+    }
+
+    public static class Tools {
+        @Config.Name("Primordial crusher has 5*5 mining zone")
+        public boolean zone_5 = true;
     }
 
 

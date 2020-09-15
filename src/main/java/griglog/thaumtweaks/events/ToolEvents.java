@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.events;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 @Mod.EventBusSubscriber
 public class ToolEvents {
     public static HashMap<Integer, EnumFacing> lastFaceClicked;
+
     static {
         try {
             Field f = thaumcraft.common.lib.events.ToolEvents.class.getDeclaredField("lastFaceClicked");
@@ -27,6 +29,7 @@ public class ToolEvents {
             e.printStackTrace();
         }
     }
+
     static boolean blocksBreaking = false;
 
     @SubscribeEvent()
@@ -38,38 +41,76 @@ public class ToolEvents {
         if (heldItem.getUnlocalizedName().equals(ItemsTC.primalCrusher.getUnlocalizedName()) && !blocksBreaking && !player.isSneaking()) {
             blocksBreaking = true;
             EnumFacing facing = lastFaceClicked.get(event.getHarvester().getEntityId());
-
-            switch (facing) {
-                case UP:
-                case DOWN:
-                    for (int x = -2; x <= 2; x++) {
-                        for (int z = -2; z <= 2; z++) {
-                            tryBreakBlock(event, x, 0, z, heldItem);
-                        }
-                    }
-                    break;
-
-                case SOUTH:
-                case NORTH:
-                    for (int x = -2; x <= 2; x++) {
-                        for (int y = -1; y <= 3; y++) {
-                            tryBreakBlock(event, x, y, 0, heldItem);
-                        }
-                    }
-                    break;
-
-                case EAST:
-                case WEST:
-                    for (int z = -2; z <= 2; z++) {
-                        for (int y = -1; y <= 3; y++) {
-                            tryBreakBlock(event, 0, y, z, heldItem);
-                        }
-                    }
-                    break;
-                }
-                blocksBreaking = false;
-            }
+            if (TTConfig.tools.zone_5)
+                mineExtended(facing, event, heldItem);
+            else
+                mineUsual(facing, event, heldItem);
+            blocksBreaking = false;
         }
+    }
+
+    private static void mineUsual(EnumFacing facing, BlockEvent.HarvestDropsEvent event, ItemStack heldItem) {
+        switch (facing) {
+            case UP:
+            case DOWN:
+                for (int x = -1; x <= 1; x++) {
+                    for (int z = -1; z <= 1; z++) {
+                        tryBreakBlock(event, x, 0, z, heldItem);
+                    }
+                }
+                break;
+
+            case SOUTH:
+            case NORTH:
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = -1; y <= 1; y++) {
+                        tryBreakBlock(event, x, y, 0, heldItem);
+                    }
+                }
+                break;
+
+            case EAST:
+            case WEST:
+                for (int z = -1; z <= 1; z++) {
+                    for (int y = -1; y <= 1; y++) {
+                        tryBreakBlock(event, 0, y, z, heldItem);
+                    }
+                }
+                break;
+        }
+    }
+
+
+    static void mineExtended(EnumFacing facing, BlockEvent.HarvestDropsEvent event, ItemStack heldItem) {
+        switch (facing) {
+            case UP:
+            case DOWN:
+                for (int x = -2; x <= 2; x++) {
+                    for (int z = -2; z <= 2; z++) {
+                        tryBreakBlock(event, x, 0, z, heldItem);
+                    }
+                }
+                break;
+
+            case SOUTH:
+            case NORTH:
+                for (int x = -2; x <= 2; x++) {
+                    for (int y = -1; y <= 3; y++) {
+                        tryBreakBlock(event, x, y, 0, heldItem);
+                    }
+                }
+                break;
+
+            case EAST:
+            case WEST:
+                for (int z = -2; z <= 2; z++) {
+                    for (int y = -1; y <= 3; y++) {
+                        tryBreakBlock(event, 0, y, z, heldItem);
+                    }
+                }
+                break;
+        }
+    }
 
     static void tryBreakBlock(BlockEvent.HarvestDropsEvent event, int xx, int yy, int zz, ItemStack heldItem) {
         IBlockState bl = event.getWorld().getBlockState(event.getPos().add(xx, yy, zz));
