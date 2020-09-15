@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.armor;
 
 import com.google.common.collect.Multimap;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -17,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.common.items.armor.ItemFortressArmor;
-import thaumcraft.common.items.armor.ItemVoidArmor;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -52,13 +52,12 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         if (player instanceof EntityPlayer) {
             int q = 0;
             for(int a = 1; a < 4; ++a) {
-                ItemStack piece = (ItemStack)((EntityPlayer)player).inventory.armorInventory.get(a);
-                if (piece != null && !piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
+                ItemStack piece = ((EntityPlayer)player).inventory.armorInventory.get(a);
+                if (!piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
                     if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask")) {
                         ++ap.Armor;
                     }
-                    ++q;
-                    if (q <= 1) {
+                    if (++q <= 1) {
                         ++ap.Armor;
                         ++ap.Toughness;
                     }
@@ -67,10 +66,10 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         }
 
         int priority = 0;
-        double ratio = (this.damageReduceAmount + ap.Armor) * 0.0375; // 71% / 75% with mask
+        double ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.armor.fortRatio / 19; //70%
         if (source.isMagicDamage()) {
             priority = 1;
-            ratio = (this.damageReduceAmount + ap.Armor) * 0.035;  //
+            ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.armor.fortMagicRatio / 19; // 50%
         } else if (!source.isFireDamage() && !source.isExplosion()) {
             if (source.isUnblockable()) {
                 priority = 0;
@@ -78,23 +77,10 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
             }
         }
 
-        ratio += tryAddRatio(player, armor, damage);
-        //76% / 80% if enough vis
+        ratio += tryAddRatio(player, armor, damage); //76% / 81% if enough vis
         ap.AbsorbRatio = ratio;
         ap.Priority = priority;
         return ap;
-    }
-
-    public boolean handleUnblockableDamage(EntityLivingBase entity, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
-        return true;  //have no clue why azanor didnt use it
-    }
-
-    public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
-        return 320;
-    }
-
-    public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {
-        return IRechargable.EnumChargeDisplay.NORMAL;
     }
 
     void addStrength(EntityPlayer player) {
@@ -111,35 +97,44 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         return true;
     }
 
-    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-        int q = 0;
-        int ar = 0;
-
-        for(int a = 1; a < 4; ++a) {
-            ItemStack piece = (ItemStack)player.inventory.armorInventory.get(a);
-            if (piece != null && !piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
-                if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask")) {
-                    ++ar;
-                }
-
-                ++q;
-                if (q <= 1) {
-                    ++ar;
-                }
-            }
-        }
-
-        return ar;
-    }
-
     double tryAddRatio(EntityLivingBase entity, ItemStack is, double damage) {
         EntityPlayer player = (EntityPlayer) entity;
         if (player == null)
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.70 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(2)))))
-            return (armorType == EntityEquipmentSlot.HEAD ? 0.01 : 0.02);
+                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.armor.logBase)))))
+            return TTConfig.armor.fortProtec;
         return 0;
+    }
+
+    public boolean handleUnblockableDamage(EntityLivingBase entity, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
+        return true;  //have no clue why azanor didnt use it
+    }
+
+    public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
+        return 320;
+    }
+
+    public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {
+        return IRechargable.EnumChargeDisplay.NORMAL;
+    }
+
+    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
+        int q = 0;
+        int ar = 0;
+
+        for(int a = 1; a < 4; ++a) {
+            ItemStack piece = player.inventory.armorInventory.get(a);
+            if (!piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
+                if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask"))
+                    ++ar;
+                ++q;
+                if (q <= 1)
+                    ++ar;
+            }
+        }
+
+        return ar;
     }
 }

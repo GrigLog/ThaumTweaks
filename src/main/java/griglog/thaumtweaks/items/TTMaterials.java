@@ -1,12 +1,9 @@
 package griglog.thaumtweaks.items;
 
-import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.EnumHelper;
-import scala.Predef;
 import thaumcraft.api.ThaumcraftMaterials;
 import thaumcraft.api.items.ItemsTC;
 

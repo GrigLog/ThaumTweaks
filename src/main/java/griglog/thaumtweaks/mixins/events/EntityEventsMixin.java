@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.events;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityMob;
@@ -122,10 +123,10 @@ public class EntityEventsMixin {
     private static void tryWitherMask(LivingHurtEvent event, EntityPlayer player) {
         if (event.getSource().getTrueSource() != null && event.getSource().getTrueSource() instanceof EntityLivingBase) {
             EntityLivingBase attacker = (EntityLivingBase)event.getSource().getTrueSource();
-            ItemStack helm = (ItemStack)player.inventory.armorInventory.get(3);
+            ItemStack helm = player.inventory.armorInventory.get(3);
             if (helm != null && !helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 1) {
                 try {
-                    attacker.addPotionEffect(new PotionEffect(MobEffects.WITHER, 20*30, 1));
+                    attacker.addPotionEffect(new PotionEffect(MobEffects.WITHER, 20 * TTConfig.fortressMask.witherDuration, TTConfig.fortressMask.witherLevel - 1));
                 } catch (Exception var6) {
                 }
             }
@@ -134,9 +135,9 @@ public class EntityEventsMixin {
 
     private static void tryHealingMask(LivingHurtEvent event) {
         EntityPlayer player = (EntityPlayer)event.getSource().getTrueSource();
-        ItemStack helm = (ItemStack)player.inventory.armorInventory.get(3);
+        ItemStack helm = player.inventory.armorInventory.get(3);
         if (helm != null && !helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 2) {
-            player.heal(event.getAmount() / 10);
+            player.heal(event.getAmount() * (float) TTConfig.fortressMask.healCoeff);
         }
     }
 

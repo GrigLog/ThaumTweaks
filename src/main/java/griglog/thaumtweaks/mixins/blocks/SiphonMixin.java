@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +33,7 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
                 d = Math.sqrt(fr.getRiftSize());
                 this.progress += d;
                 fr.setRiftStability((float)(fr.getRiftStability() - d / 15.0D));
-                if (this.world.rand.nextInt(reduceChance) == 0) {
+                if (this.world.rand.nextDouble() < reduceChance) {
                     fr.setRiftSize(fr.getRiftSize() - 1);
                 }
             }
@@ -70,6 +71,6 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
     int counter;
     @Shadow
     public int progress;
-    public final int cap = 200;  //10x faster
-    public final int reduceChance = 15;  //2x faster
+    public final int cap = (int) (2000 / TTConfig.voidSiphon.speed);
+    public final double reduceChance = 0.03 / TTConfig.voidSiphon.endurance;
 }

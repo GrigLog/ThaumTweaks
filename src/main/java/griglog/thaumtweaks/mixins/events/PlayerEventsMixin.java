@@ -1,15 +1,12 @@
 package griglog.thaumtweaks.mixins.events;
 
 import baubles.api.BaublesApi;
-import griglog.thaumtweaks.SF;
-import net.minecraft.entity.Entity;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,8 +21,6 @@ import thaumcraft.api.items.ItemsTC;
 import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.common.config.ModConfig;
-import thaumcraft.common.golems.EntityThaumcraftGolem;
-import thaumcraft.common.lib.capabilities.PlayerKnowledge;
 import thaumcraft.common.lib.events.PlayerEvents;
 import thaumcraft.common.world.aura.AuraHandler;
 
@@ -34,8 +29,8 @@ import java.util.HashMap;
 
 @Mixin(PlayerEvents.class)
 public class PlayerEventsMixin {
-    private static final double XP_MULT = 2;
-    private static final int THEORY_MULT = 4;
+    private static final double XP_MULT = TTConfig.curBand.xpMult;
+    private static final int THEORY_MULT = TTConfig.curBand.theorMult;
 
     @Inject(method="pickupXP", at=@At("HEAD"), cancellable = true, remap=false)
     private static void pickupXP(PlayerPickupXpEvent event, CallbackInfo ci) {
@@ -106,7 +101,7 @@ public class PlayerEventsMixin {
             if (equip.size() > 0) {
                 ItemStack chosen = equip.get(player.world.rand.nextInt(equip.size()));
                 if (RechargeHelper.consumeCharge(chosen, player, 5))
-                    recoverShield(player, charge, time, 500);
+                    recoverShield(player, charge, time, (int) (ModConfig.CONFIG_MISC.shieldRecharge / TTConfig.runShield.invBoost));
             //try to recharge from aura
             } else if (!AuraHandler.shouldPreserveAura(player.world, player, player.getPosition()) &&
                     AuraHelper.getVis(player.world, new BlockPos(player)) >= (float) ModConfig.CONFIG_MISC.shieldCost) {
@@ -144,15 +139,15 @@ public class PlayerEventsMixin {
     }
 
     private static void addTheories(EntityPlayer player, double d) {
-        float r = player.getRNG().nextFloat();
+        double r = player.getRNG().nextFloat();
         String[] s;
         String cat;
-        if ((double)r < 0.05D * (double)d * XP_MULT) {
-            s = (String[]) ResearchCategories.researchCategories.keySet().toArray(new String[0]);
+        if (r < 0.05D * d * XP_MULT) {
+            s = ResearchCategories.researchCategories.keySet().toArray(new String[0]);
             cat = s[player.getRNG().nextInt(s.length)];
             ThaumcraftApi.internalMethods.addKnowledge(player, IPlayerKnowledge.EnumKnowledgeType.THEORY, ResearchCategories.getResearchCategory(cat), THEORY_MULT);
-        } else if ((double)r < 0.2D * (double)d * XP_MULT) {
-            s = (String[])ResearchCategories.researchCategories.keySet().toArray(new String[0]);
+        } else if (r < 0.2D * d * XP_MULT) {
+            s = ResearchCategories.researchCategories.keySet().toArray(new String[0]);
             cat = s[player.getRNG().nextInt(s.length)];
             ThaumcraftApi.internalMethods.addKnowledge(player, IPlayerKnowledge.EnumKnowledgeType.OBSERVATION, ResearchCategories.getResearchCategory(cat), THEORY_MULT);
         }

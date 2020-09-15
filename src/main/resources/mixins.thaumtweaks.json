@@ -1,5 +1,5 @@
 {
-  "minVersion": "0.8.1",
+  "minVersion": "0.8",
   "package": "griglog.thaumtweaks.mixins",
   "refmap": "mixins.thaumtweaks.refmap.json",
   "compatibilityLevel": "JAVA_8",

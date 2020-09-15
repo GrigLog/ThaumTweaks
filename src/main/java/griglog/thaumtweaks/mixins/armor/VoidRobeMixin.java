@@ -1,28 +1,24 @@
 package griglog.thaumtweaks.mixins.armor;
 
 import com.google.common.collect.Multimap;
-import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import org.spongepowered.asm.mixin.Mixin;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
-import thaumcraft.common.items.armor.ItemVoidArmor;
 import thaumcraft.common.items.armor.ItemVoidRobeArmor;
-import thaumcraft.common.items.baubles.ItemAmuletVis;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -75,14 +71,13 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
 
     public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
         int priority = 0;
-        double ratio = this.damageReduceAmount * 0.04;  //80%
+        double ratio = this.damageReduceAmount * TTConfig.armor.voidRatio / 20;  //80%
         if (source.isMagicDamage() || source.isUnblockable()) {
             priority = 1;
-            ratio = this.damageReduceAmount * 0.0325; //65%
+            ratio = this.damageReduceAmount * TTConfig.armor.voidMagicRatio / 20; //65%
         }
 
-        ratio += tryAddRatio(player, armor, damage);
-        //86% / 71% if enough vis
+        ratio += tryAddRatio(player, armor, damage);  //90% / 75% if enough vis
         return new ISpecialArmor.ArmorProperties(priority, ratio, armor.getMaxDamage() + 1 - armor.getItemDamage());
     }
 
@@ -134,8 +129,8 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.75 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(2)))))
-            return 0.02;
+                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.armor.logBase)))))
+            return TTConfig.armor.voidProtec;
         return 0;
     }
 
