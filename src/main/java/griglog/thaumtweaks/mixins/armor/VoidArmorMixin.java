@@ -52,8 +52,8 @@ public abstract class VoidArmorMixin extends ItemArmor {
         int ar = 0;
 
         for(int a = 1; a < 4; ++a) {
-            ItemStack piece = (ItemStack)player.inventory.armorInventory.get(a);
-            if (piece != null && !piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
+            ItemStack piece = player.inventory.armorInventory.get(a);
+            if (!piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
                 if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask")) {
                     ++ar;
                 }

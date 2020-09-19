@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import griglog.thaumtweaks.items.ItemFiller;
 import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.CrystalHandler;
 import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.ExitHandler;
@@ -80,13 +81,13 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+        return (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && TTConfig.general.autoCraft) || super.hasCapability(capability, facing);
     }
 
     @Nullable
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && TTConfig.general.autoCraft) {
             for (EnumFacing f : FACES_GRID) {
                 if (facing == f)
                     return (T) grid;
@@ -174,7 +175,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
             }
         }
 
-        if (!powered && arecipe != null && arecipeFound) {  //was not powered with redstone, craft things
+        if (!powered && arecipe != null && arecipeFound && TTConfig.general.autoCraft) {  //was not powered with redstone and not config-banned, craft things
             ItemStack current = inventoryResult.getStackInSlot(0);
             int count = current.getCount();
             if (preview) {

@@ -71,10 +71,10 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
 
     public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
         int priority = 0;
-        double ratio = this.damageReduceAmount * TTConfig.armor.voidRatio / 20;  //80%
+        double ratio = this.damageReduceAmount * TTConfig.voidRobe.ratio / 20;  //80%
         if (source.isMagicDamage() || source.isUnblockable()) {
             priority = 1;
-            ratio = this.damageReduceAmount * TTConfig.armor.voidMagicRatio / 20; //65%
+            ratio = this.damageReduceAmount * TTConfig.voidRobe.magicRatio / 20; //65%
         }
 
         ratio += tryAddRatio(player, armor, damage);  //90% / 75% if enough vis
@@ -90,7 +90,7 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
     }
 
     public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
-        return 480;
+        return TTConfig.voidRobe.vis;
     }
 
     public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {
@@ -107,19 +107,22 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
                 .filter(Potion::isBadEffect)
                 .collect(Collectors.toList());
         for (Potion p : badPotions) {
+            if (TTConfig.voidRobe.canClear)
             player.removePotionEffect(p);
-            RechargeHelper.consumeCharge(is, player, 10);
+            RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis);
         }
     }
 
     void tryHeal(EntityPlayer player, ItemStack is) {
-        if (player.getHealth() < player.getMaxHealth() && RechargeHelper.consumeCharge(is, player, 1)) {
-            player.heal(1);
+        if (player.getHealth() < player.getMaxHealth()
+                && RechargeHelper.consumeCharge(is, player, (int) (TTConfig.voidRobe.heal * TTConfig.voidRobe.healVis))) {
+            player.heal((float) TTConfig.voidRobe.heal);
         }
     }
 
     void tryFeed(EntityPlayer player, ItemStack is) {
-        if (player.canEat(false) && RechargeHelper.consumeCharge(is, player, 1))
+        if (TTConfig.voidRobe.canFeed && player.canEat(false)
+                && RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.feedVis))
             player.getFoodStats().addStats(1, 0.3F);
     }
 
@@ -129,8 +132,8 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.75 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.armor.logBase)))))
-            return TTConfig.armor.voidProtec;
+                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.voidRobe.logBase)))))
+            return TTConfig.voidRobe.protec;
         return 0;
     }
 

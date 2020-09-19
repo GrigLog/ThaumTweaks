@@ -2,6 +2,7 @@ package griglog.thaumtweaks.mixins.golems;
 
 import com.mojang.authlib.GameProfile;
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -48,14 +49,8 @@ public class GolemHelperMixin {
         fp.setSneaking(sneaking);
         fp.setWorld(world);
 
-        if (golem instanceof EntityThaumcraftGolem) {
-            IPlayerKnowledge fakeBrains = ThaumcraftCapabilities.getKnowledge(fp);
-            IPlayerKnowledge golemBrains = ((EntityThaumcraftGolem)golem).getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-            if (golemBrains != null) {
-                for (String k : golemBrains.getResearchList()) {
-                    fakeBrains.addResearch(k);
-                }
-            }
+        if (golem instanceof EntityThaumcraftGolem && TTConfig.general.autoInfusion) {
+            SF.copyKnowledge(golem, fp);
         }
 
         if (!rightClick) {

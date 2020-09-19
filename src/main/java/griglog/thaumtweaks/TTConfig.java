@@ -14,8 +14,10 @@ public class TTConfig {
     public static VoidSiphon voidSiphon = new VoidSiphon();
     @Config.Name("Runic shield")
     public static RunShield runShield = new RunShield();
-    @Config.Name("Armor")
-    public static Armor armor = new Armor();
+    @Config.Name("Void robe")
+    public static VoidRobe voidRobe = new VoidRobe();
+    @Config.Name("Fortress armor")
+    public static FortArmor fortArmor = new FortArmor();
     @Config.Name("tools")
     public static Tools tools = new Tools();
 
@@ -24,6 +26,10 @@ public class TTConfig {
         public boolean craftOverride = true;
         @Config.Name("Tweak materials (tools' and armors' stats)")
         public boolean materialOverride = true;
+        @Config.Name("Golems can start infusions")
+        public boolean autoInfusion = true;
+        @Config.Name("Arcane workbench can autocraft")
+        public boolean autoCraft = true;
     }
 
     public static class CurBand {
@@ -56,23 +62,51 @@ public class TTConfig {
         public double invBoost = 4;
     }
 
-    public static class Armor {
+    public static class FortArmor {
         @Config.Name("Vis consumption's logarithm's base")
         public double logBase = 2;
+        @Config.Name("Vis charge")
+        public int vis = 320;
 
-        @Config.Name("Void robe's vis-based protection ratio (per item)")
-        public double voidProtec = 0.0333D;
-        @Config.Name("Void robe's damage reduction")
-        public double voidRatio = 0.8D;
-        @Config.Name("Void robe's magic damage reduction")
-        public double voidMagicRatio = 0.65D;
+        @Config.Name("Vis-based protection ratio (per item)")
+        public double protec = 0.02D;
+        @Config.Name("Damage reduction")
+        public double ratio = 0.7D;
+        @Config.Name("Magic damage reduction")
+        public double magicRatio = 0.5D;
 
-        @Config.Name("Fortress armor's vis-based protection ratio (per item)")
-        public double fortProtec = 0.02D;
-        @Config.Name("Fortress armor's damage reduction")
-        public double fortRatio = 0.7D;
-        @Config.Name("Fortress armor's magic damage reduction")
-        public double fortMagicRatio = 0.5D;
+        @Config.Name("Strength level")
+        @Config.RangeInt(min=0, max=10)
+        public int str = 2;
+    }
+
+    public static class VoidRobe {
+        @Config.Name("Vis consumption's logarithm's base")
+        public double logBase = 2;
+        @Config.Name("Vis charge")
+        public int vis = 480;
+
+        @Config.Name("Vis-based protection ratio (per item)")
+        public double protec = 0.0333D;
+        @Config.Name("Damage reduction")
+        public double ratio = 0.8D;
+        @Config.Name("Magic damage reduction")
+        public double magicRatio = 0.65D;
+
+        @Config.Name("Heal per second")
+        public double heal = 1.0D;
+        @Config.Name("Vis per 1 hp healed")
+        public int healVis = 1;
+
+        @Config.Name("Allow feeding")
+        public boolean canFeed = true;
+        @Config.Name("Vis per feeding")
+        public int feedVis = 5;
+
+        @Config.Name("Allow debuff clearing")
+        public boolean canClear = true;
+        @Config.Name("Vis per debuff")
+        public int clearVis = 5;
     }
 
     public static class Tools {

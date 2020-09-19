@@ -66,10 +66,10 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         }
 
         int priority = 0;
-        double ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.armor.fortRatio / 19; //70%
+        double ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.fortArmor.ratio / 19; //70%
         if (source.isMagicDamage()) {
             priority = 1;
-            ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.armor.fortMagicRatio / 19; // 50%
+            ratio = (this.damageReduceAmount + ap.Armor) * TTConfig.fortArmor.magicRatio / 19; // 50%
         } else if (!source.isFireDamage() && !source.isExplosion()) {
             if (source.isUnblockable()) {
                 priority = 0;
@@ -84,7 +84,8 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
     }
 
     void addStrength(EntityPlayer player) {
-        player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 100, 1));
+        if (TTConfig.fortArmor.str > 0)
+            player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 100, TTConfig.fortArmor.str - 1));
     }
 
     public boolean hasSet(EntityPlayer player) {
@@ -103,8 +104,8 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.70 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.armor.logBase)))))
-            return TTConfig.armor.fortProtec;
+                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.fortArmor.logBase)))))
+            return TTConfig.fortArmor.protec;
         return 0;
     }
 
@@ -113,7 +114,7 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
     }
 
     public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
-        return 320;
+        return TTConfig.fortArmor.vis;
     }
 
     public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {

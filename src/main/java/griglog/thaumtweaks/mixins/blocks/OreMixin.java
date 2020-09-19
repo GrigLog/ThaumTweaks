@@ -27,8 +27,8 @@ public abstract class OreMixin extends BlockTC {
             Random rand = world instanceof World ? ((World)world).rand : RANDOM;
 
             for(int a = 0; a < drops.size(); ++a) {
-                ItemStack is = (ItemStack)drops.get(a);
-                //yes, not fair.
+                ItemStack is = drops.get(a);
+                //yes, not linear.
                 double mult = Math.sqrt(1D / (fortune + 2) + (fortune + 1) / 2D);
                 if (is != null && !is.isEmpty() && is.getItem() == ItemsTC.amber && (double)rand.nextFloat() < 0.066D * mult) {
                     drops.set(a, new ItemStack(ItemsTC.curio, 1, 1));

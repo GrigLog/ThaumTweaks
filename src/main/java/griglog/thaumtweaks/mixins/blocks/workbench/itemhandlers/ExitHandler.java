@@ -61,7 +61,6 @@ public class ExitHandler extends ArcaneHandler implements INBTSerializable<NBTTa
     public void deserializeNBT(NBTTagCompound nbt) {
         NBTTagCompound item = (NBTTagCompound) nbt.getTag("ExitHandlers item");
         if (item != null) {
-            ThaumTweaks.LOGGER.info(item);
             setStackInSlot(0, new ItemStack(item));
         }
     }
