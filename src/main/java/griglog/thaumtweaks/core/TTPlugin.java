@@ -1,5 +1,7 @@
 package griglog.thaumtweaks.core;
 
+import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -17,7 +19,10 @@ import java.util.Map;
 public class TTPlugin implements IFMLLoadingPlugin {
     public TTPlugin() {
         try {
-            loadModJar(new File(System.getProperty("user.dir") + "\\mods", "Thaumcraft-1.12.2-6.1.BETA26.jar"));
+            File thisFile = new File(TTPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            File thaumFile = new File(thisFile.getParent(), "Thaumcraft-1.12.2-6.1.BETA26.jar");
+            ThaumTweaks.LOGGER.info("Supposed jar location: " + thaumFile.getAbsolutePath());
+            loadModJar(thaumFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,7 +31,7 @@ public class TTPlugin implements IFMLLoadingPlugin {
     }
 
     private void loadModJar(File jar) throws Exception{
-        ((LaunchClassLoader) this.getClass().getClassLoader()).addURL(jar.toURI().toURL());
+        ((LaunchClassLoader) getClass().getClassLoader()).addURL(jar.toURI().toURL());
         CoreModManager.getReparseableCoremods().add(jar.getName());
     }
 
