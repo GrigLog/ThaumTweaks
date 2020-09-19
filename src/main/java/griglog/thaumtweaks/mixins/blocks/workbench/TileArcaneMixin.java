@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.items.ItemFiller;
 import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.CrystalHandler;
 import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.ExitHandler;
 import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.GridHandler;
@@ -122,7 +123,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
             if (crystals != null && crystals.size() > 0) {
                 Aspect[] aspects = crystals.getAspects();
                 for (Aspect aspect: aspects) {
-                    if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(inventoryCraft, EnumFacing.UP),
+                    if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(parseFillers(inventoryCraft), EnumFacing.UP),
                             ThaumcraftApiHelper.makeCrystal(aspect, crystals.getAmount(aspect)),
                             ThaumcraftInvHelper.InvFilter.STRICT)
                             < crystals.getAmount(aspect)) {
@@ -138,6 +139,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         }
     }
 
+
     public void doCrafting(World world, EntityPlayer player, Integer windowId) {  //sets itemstack to exit slot
         if (world.isRemote)
             return;
@@ -146,7 +148,8 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         IArcaneRecipe arecipe;
         FakePlayer fake = SF.getFake((WorldServer)world);
         SF.copyKnowledge(this, fake);
-        arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(inventoryCraft, fake);
+        InventoryCrafting parsedGrid = parseFillers(inventoryCraft);
+        arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(parsedGrid, fake);
 
         boolean powered = world.isBlockPowered(getPos());
         boolean arecipeFound = false;
@@ -155,19 +158,19 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
                 && (!powered || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(arecipe))
                 && fakeBrains.isResearchKnown(arecipe.getResearch())) {
             inventoryResult.setRecipeUsed(arecipe);
-            itemstack = arecipe.getCraftingResult(inventoryCraft);
+            itemstack = arecipe.getCraftingResult(parsedGrid);
             arecipeFound = true;
         } else if (powered) {
             InventoryCrafting craftInv = new InventoryCrafting(new ContainerDummy(), 3, 3);
 
             for(int a = 0; a < 9; ++a) {
-                craftInv.setInventorySlotContents(a, inventoryCraft.getStackInSlot(a));
+                craftInv.setInventorySlotContents(a, parsedGrid.getStackInSlot(a));
             }
 
             IRecipe irecipe = CraftingManager.findMatchingRecipe(craftInv, world);
             if (irecipe != null && (irecipe.isDynamic() || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(irecipe))) {
                 inventoryResult.setRecipeUsed(irecipe);
-                itemstack = irecipe.getCraftingResult(inventoryCraft);
+                itemstack = irecipe.getCraftingResult(parsedGrid);
             }
         }
 
@@ -202,7 +205,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
     void consumeItems(IArcaneRecipe recipe){
         for (int i = 0; i < grid.getSlots(); i++) {
             ItemStack is = grid.getStackInSlot(i);
-            if (!is.isEmpty())
+            if (!is.isEmpty() && !(is.getItem() instanceof ItemFiller))
                 is.setCount(is.getCount() - 1);
         }
         if (recipe.getCrystals() != null && recipe.getCrystals().getAspects() != null) {
@@ -216,6 +219,18 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
             getAura();
             spendAura(vis);
         }
+    }
+
+    InventoryCrafting parseFillers(InventoryArcaneWorkbench inv) {
+        InventoryCrafting res = new InventoryArcaneWorkbench(null, new ContainerDummy());
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (stack.getItem() instanceof ItemFiller) {
+                stack = ItemStack.EMPTY;
+            }
+            res.setInventorySlotContents(i, stack);
+        }
+        return res;
     }
 
     @Override

@@ -2,6 +2,7 @@ package griglog.thaumtweaks;
 
 import griglog.thaumtweaks.crafts.ArcaneTweaks;
 import griglog.thaumtweaks.crafts.CruicibleTweaks;
+import griglog.thaumtweaks.crafts.CustomCrafts;
 import griglog.thaumtweaks.crafts.InfusionTweaks;
 import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraftforge.fml.common.Mod;
@@ -42,5 +43,6 @@ public class ThaumTweaks
             CruicibleTweaks.override();
             ArcaneTweaks.override();
         }
+        CustomCrafts.registerRecipes();
     }
 }
