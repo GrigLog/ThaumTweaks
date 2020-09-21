@@ -41,6 +41,8 @@ public class ToolEvents {
         if (heldItem.getUnlocalizedName().equals(ItemsTC.primalCrusher.getUnlocalizedName()) && !blocksBreaking && !player.isSneaking()) {
             blocksBreaking = true;
             EnumFacing facing = lastFaceClicked.get(event.getHarvester().getEntityId());
+            if (facing == null)
+                facing = EnumFacing.getDirectionFromEntityLiving(event.getPos(), event.getHarvester());
             if (TTConfig.tools.zone_5)
                 mineExtended(facing, event, heldItem);
             else

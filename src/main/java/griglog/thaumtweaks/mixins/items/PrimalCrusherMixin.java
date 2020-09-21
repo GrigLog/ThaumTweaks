@@ -35,7 +35,7 @@ public abstract class PrimalCrusherMixin extends ItemTool {
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
         if (tab == ConfigItems.TABTC || tab == CreativeTabs.SEARCH) {
             ItemStack w1 = new ItemStack(this);
-            EnumInfusionEnchantment.addInfusionEnchantment(w1, EnumInfusionEnchantment.REFINING, 1);
+            EnumInfusionEnchantment.addInfusionEnchantment(w1, EnumInfusionEnchantment.REFINING, 2);
             items.add(w1);
         }
     }

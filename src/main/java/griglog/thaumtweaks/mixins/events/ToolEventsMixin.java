@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.events;
 
+import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.events.EventHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -37,14 +38,11 @@ public class ToolEventsMixin {
 
     @Inject(method = "harvestBlockEvent", at=@At("HEAD"), cancellable = true, remap = false)
     private static void harvestBlockEvent(final BlockEvent.HarvestDropsEvent event, CallbackInfo ci) {
-        dropEarths(event);
-
         if (!event.getWorld().isRemote && event.getHarvester() != null) {
             ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
             if (!heldItem.isEmpty()) {
                 List<EnumInfusionEnchantment> list = EnumInfusionEnchantment.getInfusionEnchantments(heldItem);
                 if (event.isSilkTouching() || ForgeHooks.isToolEffective(event.getWorld(), event.getPos(), heldItem) || heldItem.getItem() instanceof ItemTool && ((ItemTool)heldItem.getItem()).getDestroySpeed(heldItem, event.getState()) > 1.0F) {
-                    int xx;
                     if (list.contains(EnumInfusionEnchantment.REFINING))
                         doRefining(event, heldItem);
 
@@ -64,6 +62,7 @@ public class ToolEventsMixin {
                 }
             }
         }
+        dropEarths(event); //should be after refining
     ci.cancel();
     }
 
@@ -71,10 +70,12 @@ public class ToolEventsMixin {
         Block block = event.getState().getBlock();
         double r = event.getWorld().rand.nextDouble();
         double mult = 1;
+        int refining = 0;
         if (event.getHarvester() != null) {
             ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
             int fort = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("fortune"), heldItem);
             mult = 1D / (fort + 2) + (fort + 1) / 2D;
+            refining = EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
         }
         if (!event.getWorld().isRemote && !event.isSilkTouching() &&
                 (block == Blocks.DIAMOND_ORE && r < 0.05D * mult ||
@@ -86,14 +87,15 @@ public class ToolEventsMixin {
                 block == Blocks.QUARTZ_ORE && r < 0.01D * mult ||
                 block == BlocksTC.oreAmber && r < 0.05D * mult ||
                 block == BlocksTC.oreQuartz && r < 0.05D * mult)) {
-            event.getDrops().add(new ItemStack(ItemsTC.nuggets, 1, 10));
+            boolean bonusDrop = event.getWorld().rand.nextDouble() < refining * 0.25;
+            event.getDrops().add(new ItemStack(ItemsTC.nuggets, bonusDrop ? 2 : 1, 10));
         }
     }
 
     private static void doDestructive(BlockEvent.HarvestDropsEvent event, ItemStack heldItem) {
         int xx;
         blockDestructiveRecursion = true;
-        EnumFacing face = (EnumFacing)lastFaceClicked.get(event.getHarvester().getEntityId());
+        EnumFacing face = lastFaceClicked.get(event.getHarvester().getEntityId());
         if (face == null) {
             face = EnumFacing.getDirectionFromEntityLiving(event.getPos(), event.getHarvester());
         }
@@ -140,16 +142,16 @@ public class ToolEventsMixin {
     }
 
     private static void doRefining(BlockEvent.HarvestDropsEvent event, ItemStack heldItem) {
-        int xx;
+        int i;
         int fortune = 1 + EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
         float chance = (float)fortune * 0.125F;
         boolean b = false;
 
-        for(xx = 0; xx < event.getDrops().size(); ++xx) {
-            ItemStack is = (ItemStack)event.getDrops().get(xx);
-            ItemStack smr = Utils.findSpecialMiningResult(is, chance, event.getWorld().rand);
-            if (!is.isItemEqual(smr)) {
-                event.getDrops().set(xx, smr);
+        for(i = 0; i < event.getDrops().size(); ++i) {
+            ItemStack is = event.getDrops().get(i);
+            ItemStack cluster = Utils.findSpecialMiningResult(is, chance, event.getWorld().rand);
+            if (!is.isItemEqual(cluster)) {
+                event.getDrops().set(i, cluster);
                 b = true;
             }
         }
