@@ -13,13 +13,11 @@ import java.io.File;
 import java.util.Map;
 
 
-@IFMLLoadingPlugin.TransformerExclusions({"griglog.thaumtweaks"})
 @IFMLLoadingPlugin.MCVersion("1.12.2")
-@IFMLLoadingPlugin.Name("ThaumTweaks' tweaks")
 public class TTPlugin implements IFMLLoadingPlugin {
     public TTPlugin() {
         try {
-            File thisFile = new File(TTPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+            File thisFile = new File(TTPlugin.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             File thaumFile = new File(thisFile.getParent(), "Thaumcraft-1.12.2-6.1.BETA26.jar");
             ThaumTweaks.LOGGER.info("Supposed jar location: " + thaumFile.getAbsolutePath());
             loadModJar(thaumFile);
