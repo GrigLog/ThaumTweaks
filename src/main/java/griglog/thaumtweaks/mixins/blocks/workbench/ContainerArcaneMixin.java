@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks.workbench;
 
+import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;

@@ -18,8 +18,10 @@ public class TTConfig {
     public static VoidRobe voidRobe = new VoidRobe();
     @Config.Name("Fortress armor")
     public static FortArmor fortArmor = new FortArmor();
-    @Config.Name("tools")
+    @Config.Name("Tools")
     public static Tools tools = new Tools();
+    @Config.Name("Golem stats")
+    public static GolemStats golemStats = new GolemStats();
 
     public static class General {
         @Config.Name("Tweak crafts")
@@ -107,6 +109,15 @@ public class TTConfig {
         public boolean canClear = true;
         @Config.Name("Vis per debuff")
         public int clearVis = 5;
+    }
+
+    public static class GolemStats {
+        @Config.Name("Allow modification")
+        public boolean allowed = true;
+        @Config.Name("Health multiplier")
+        public double hp = 1.5;
+        @Config.Name("Armor modifier")
+        public double armor = 2;
     }
 
     public static class Tools {

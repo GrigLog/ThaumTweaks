@@ -2,10 +2,11 @@ package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
+import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
 import griglog.thaumtweaks.items.ItemFiller;
-import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.CrystalHandler;
-import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.ExitHandler;
-import griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers.GridHandler;
+import griglog.thaumtweaks.blocks.workbench.itemhandlers.CrystalHandler;
+import griglog.thaumtweaks.blocks.workbench.itemhandlers.ExitHandler;
+import griglog.thaumtweaks.blocks.workbench.itemhandlers.GridHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.*;
@@ -284,7 +285,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         for (int i = 0; i < CrystalHandler.aspectGrid.length; i++)
             aspectSlots.put(CrystalHandler.aspectGrid[i], i);
         try {
-            container = InventoryCrafting.class.getDeclaredField((boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment") ?
+            container = InventoryCrafting.class.getDeclaredField((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment") ?
                     "eventHandler": "field_70465_c");
             container.setAccessible(true);
         } catch (NoSuchFieldException e) {

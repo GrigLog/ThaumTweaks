@@ -1,7 +1,6 @@
-package griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.workbench.itemhandlers;
 
-import griglog.thaumtweaks.ThaumTweaks;
-import griglog.thaumtweaks.mixins.blocks.workbench.InventoryArcaneResult;
+import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

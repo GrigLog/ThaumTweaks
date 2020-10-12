@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.workbench.itemhandlers;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

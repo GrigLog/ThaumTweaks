@@ -1,7 +1,5 @@
-package griglog.thaumtweaks.mixins.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.workbench.itemhandlers;
 
-import griglog.thaumtweaks.ThaumTweaks;
-import griglog.thaumtweaks.mixins.blocks.workbench.InventoryArcaneResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
