@@ -16,6 +16,7 @@
     "blocks.workbench.SlotArcaneResultMixin",
     "blocks.workbench.TileArcaneMixin",
     "entities.EntityConfigMixin",
+    "entities.GolemMixin",
     "entities.PechContainerMixin",
     "entities.TaintSeedMixin",
     "events.EntityEventsMixin",
