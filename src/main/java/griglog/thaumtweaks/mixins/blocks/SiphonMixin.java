@@ -27,12 +27,12 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
             List<EntityFluxRift> frl = this.getValidRifts();
             boolean b = false;
 
-            double d;
-            for(Iterator var3 = frl.iterator(); var3.hasNext(); b = d >= 1.0D) {
+            double speed;
+            for(Iterator var3 = frl.iterator(); var3.hasNext(); b = speed >= 1.0D) {
                 EntityFluxRift fr = (EntityFluxRift)var3.next();
-                d = Math.sqrt(fr.getRiftSize());
-                this.progress += d;
-                fr.setRiftStability((float)(fr.getRiftStability() - d / 15.0D));
+                speed = Math.sqrt(fr.getRiftSize());
+                this.progress += speed;
+                fr.setRiftStability((float)(fr.getRiftStability() - speed / 15.0D));
                 if (this.world.rand.nextDouble() < reduceChance) {
                     fr.setRiftSize(fr.getRiftSize() - 1);
                 }
@@ -45,19 +45,23 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
             if (this.progress >= cap && notFull()) {
                 b = true;
                 this.progress -= cap;
-                if (this.getStackInSlot(0).isEmpty()) {
-                    this.setInventorySlotContents(0, new ItemStack(ItemsTC.voidSeed));
-                } else {
-                    this.getStackInSlot(0).setCount(this.getStackInSlot(0).getCount() + 1);
-                }
+                if (world.rand.nextInt(24) == 0)
+                    tryAddItem(new ItemStack(ItemsTC.curio, 1, 3));
+                else
+                    tryAddItem(new ItemStack(ItemsTC.voidSeed));
             }
-
             if (b) {
                 this.syncTile(false);
                 this.markDirty();
             }
         }
+    }
 
+    void tryAddItem(ItemStack is) {
+        if (getStackInSlot(0).isEmpty())
+            setInventorySlotContents(0, is);
+        else if (getStackInSlot(0).getItem() == is.getItem())
+            getStackInSlot(0).setCount(getStackInSlot(0).getCount() + 1);
     }
 
     boolean notFull() {
@@ -71,6 +75,7 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
     int counter;
     @Shadow
     public int progress;
+
     public final int cap = (int) (2000 / TTConfig.voidSiphon.speed);
     public final double reduceChance = 0.03 / TTConfig.voidSiphon.endurance;
 }

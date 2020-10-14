@@ -11,6 +11,7 @@
     "armor.VoidRobeMixin",
     "blocks.MatrixMixin",
     "blocks.OreMixin",
+    "blocks.SiphonMixin",
     "blocks.workbench.ContainerArcaneMixin",
     "blocks.workbench.SlotArcaneResultMixin",
     "blocks.workbench.TileArcaneMixin",

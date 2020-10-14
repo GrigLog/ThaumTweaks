@@ -36,7 +36,7 @@ public abstract class PechContainerMixin extends Container {
                 totalValue -= value;
                 if (this.hasStuffInPack() && value == 1 && this.theWorld.rand.nextBoolean())
                     giveOwned();
-                else if (value < 4 || this.theWorld.rand.nextInt(5) <= 1)  //to avoid spamming rare loot
+                else if (value < 4 || this.theWorld.rand.nextInt(3) == 0)  //to avoid spamming rare loot
                     giveTrade(value);
             }
             this.inventory.decrStackSize(0, 1);
