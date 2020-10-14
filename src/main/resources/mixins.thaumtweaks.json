@@ -14,6 +14,9 @@
     "blocks.workbench.ContainerArcaneMixin",
     "blocks.workbench.SlotArcaneResultMixin",
     "blocks.workbench.TileArcaneMixin",
+    "entities.EntityConfigMixin",
+    "entities.PechContainerMixin",
+    "entities.TaintSeedMixin",
     "events.EntityEventsMixin",
     "events.PlayerEventsMixin",
     "events.ToolEventsMixin",
@@ -21,6 +24,7 @@
     "golems.GolemMaterialMixin",
     "golems.ItemPlacerMixin",
     "items.PrimalCrusherMixin",
+    "items.SoapMixin",
     "items.VisAmuletMixin",
     "items.VoidAxeMixin"
   ],

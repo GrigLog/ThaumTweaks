@@ -4,8 +4,12 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
@@ -49,5 +53,9 @@ public class SF {  //SomeFuncs
                     bBrains.addResearch(k);
             }
         }
+    }
+
+    public static void spawnItem(World world, ItemStack is, BlockPos pos) {
+        world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, is));
     }
 }
