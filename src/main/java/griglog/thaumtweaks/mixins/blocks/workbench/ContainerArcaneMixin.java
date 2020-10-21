@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks.workbench;
 
+import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -37,14 +38,7 @@ public abstract class ContainerArcaneMixin extends Container {
         craftResult = (InventoryArcaneResult)(tileEntity.getClass().getDeclaredField("inventoryResult").get(tileEntity));
         slotInventory.set(inventorySlots.get(0), craftResult);
 
-        IPlayerKnowledge tileBrains = tileEntity.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-        IPlayerKnowledge playerBrains = invPlayer.player.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-        if (tileBrains != null && playerBrains != null) {
-            for (String k : playerBrains.getResearchList()) {
-                if (!tileBrains.isResearchKnown(k))
-                    tileBrains.addResearch(k);
-            }
-        }
+        SF.copyKnowledge(invPlayer.player, tileEntity);
     }
 
     public void onCraftMatrixChanged(IInventory par1IInventory) {  //called when something is added to the grid

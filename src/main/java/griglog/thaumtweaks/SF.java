@@ -49,8 +49,8 @@ public class SF {  //SomeFuncs
 
         if (aBrains != null && bBrains != null) {
             for (String k : aBrains.getResearchList()) {
-                if (!bBrains.isResearchKnown(k))
-                    bBrains.addResearch(k);
+                bBrains.addResearch(k);
+                bBrains.setResearchStage(k, aBrains.getResearchStage(k));
             }
         }
     }
