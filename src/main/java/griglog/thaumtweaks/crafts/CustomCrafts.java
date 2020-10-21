@@ -13,7 +13,7 @@ import thaumcraft.api.crafting.ShapedArcaneRecipe;
 public class CustomCrafts {
     static ResourceLocation defaultGroup = new ResourceLocation("");
     public static void registerRecipes() {
-        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation(""),
+        ThaumcraftApi.addArcaneCraftingRecipe(new ResourceLocation("ThaumTweaks:ArcaneFiller"),
                 new ShapedArcaneRecipe(defaultGroup, "",
                         40,
                         (new AspectList()),

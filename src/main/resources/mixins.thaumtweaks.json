@@ -9,6 +9,8 @@
     "armor.FortressArmorMixin",
     "armor.VoidArmorMixin",
     "armor.VoidRobeMixin",
+    "blocks.JarMixin",
+    "blocks.JarTileMixin",
     "blocks.MatrixMixin",
     "blocks.OreMixin",
     "blocks.SiphonMixin",
