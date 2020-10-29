@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.entities;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -14,7 +15,8 @@ import thaumcraft.common.entities.monster.tainted.EntityTaintSeed;
 public abstract class TaintSeedMixin extends EntityMob {
     protected void dropFewItems(boolean flag, int looting) {
         entityDropItem(ConfigItems.FLUX_CRYSTAL.copy(), height / 2.0F);
-        entityDropItem(new ItemStack(ItemsTC.curio, 1 + this.world.rand.nextInt(1 + looting), 5), height / 2);
+        if (TTConfig.curiosities.allow)
+            entityDropItem(new ItemStack(ItemsTC.curio, 1 + this.world.rand.nextInt(1 + looting), 5), height / 2);
     }
 
     public TaintSeedMixin(World worldIn) {

@@ -34,7 +34,7 @@ public class PlayerEventsMixin {
 
     @Inject(method="pickupXP", at=@At("HEAD"), cancellable = true, remap=false)
     private static void pickupXP(PlayerPickupXpEvent event, CallbackInfo ci) {
-        if (event.getEntityPlayer() != null && !event.getEntityPlayer().world.isRemote && BaublesApi.isBaubleEquipped(event.getEntityPlayer(), ItemsTC.bandCuriosity) >= 0 && event.getOrb().getXpValue() > 1) {
+        if (TTConfig.curBand.allow && event.getEntityPlayer() != null && !event.getEntityPlayer().world.isRemote && BaublesApi.isBaubleEquipped(event.getEntityPlayer(), ItemsTC.bandCuriosity) >= 0 && event.getOrb().getXpValue() > 1) {
             int exp = event.getOrb().xpValue / 2;
             EntityXPOrb orb = event.getOrb();
             orb.xpValue -= exp;
@@ -100,8 +100,10 @@ public class PlayerEventsMixin {
             //try to recharge from inventory
             if (equip.size() > 0) {
                 ItemStack chosen = equip.get(player.world.rand.nextInt(equip.size()));
-                if (RechargeHelper.consumeCharge(chosen, player, 5))
-                    recoverShield(player, charge, time, (int) (ModConfig.CONFIG_MISC.shieldRecharge / TTConfig.runShield.invBoost));
+                if (RechargeHelper.consumeCharge(chosen, player, 5)) {
+                    double boost = TTConfig.runShield.allow ? TTConfig.runShield.invBoost: 1;
+                    recoverShield(player, charge, time, (int) (ModConfig.CONFIG_MISC.shieldRecharge / boost));
+                }
             //try to recharge from aura
             } else if (!AuraHandler.shouldPreserveAura(player.world, player, player.getPosition()) &&
                     AuraHelper.getVis(player.world, new BlockPos(player)) >= (float) ModConfig.CONFIG_MISC.shieldCost) {

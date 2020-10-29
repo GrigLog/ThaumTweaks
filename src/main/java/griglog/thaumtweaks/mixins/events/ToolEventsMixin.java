@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.events;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
 import griglog.thaumtweaks.ThaumTweaks;
 import griglog.thaumtweaks.events.EventHelper;
 import net.minecraft.block.Block;
@@ -69,38 +70,28 @@ public class ToolEventsMixin {
     }
 
     private static void dropEarths(BlockEvent.HarvestDropsEvent event) {
-        try {
-            Block block = event.getState().getBlock();
-            double r = event.getWorld().rand.nextDouble();
-            double mult = 1;
-            int refining = 0;
-            if (event.getHarvester() != null) {
-                ThaumTweaks.LOGGER.info(1);
-                if (event.getHarvester().getActiveHand() != null) {
-                    ThaumTweaks.LOGGER.info(2);
-                    ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
-                    ThaumTweaks.LOGGER.info(3);
-                    int fort = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("fortune"), heldItem);
-                    mult = 1D / (fort + 2) + (fort + 1) / 2D;
-                    refining = EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
-                }
-            }
-            if (!event.getWorld().isRemote && !event.isSilkTouching() &&
-                    (block == Blocks.DIAMOND_ORE && r < 0.05D * mult ||
-                            block == Blocks.EMERALD_ORE && r < 0.075D * mult ||
-                            block == Blocks.LAPIS_ORE && r < 0.01D * mult ||
-                            block == Blocks.COAL_ORE && r < 0.001D * mult ||
-                            block == Blocks.LIT_REDSTONE_ORE && r < 0.01D * mult ||
-                            block == Blocks.REDSTONE_ORE && r < 0.01D * mult ||
-                            block == Blocks.QUARTZ_ORE && r < 0.01D * mult ||
-                            block == BlocksTC.oreAmber && r < 0.05D * mult ||
-                            block == BlocksTC.oreQuartz && r < 0.05D * mult)) {
-                boolean bonusDrop = event.getWorld().rand.nextDouble() < refining * 0.25;
-                event.getDrops().add(new ItemStack(ItemsTC.nuggets, bonusDrop ? 2 : 1, 10));
-            }
+        Block block = event.getState().getBlock();
+        double r = event.getWorld().rand.nextDouble();
+        double mult = 1;
+        int refining = 0;
+        if (TTConfig.general.earths && event.getHarvester() != null && event.getHarvester().getActiveHand() != null) {
+            ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
+            int fort = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("fortune"), heldItem);
+            mult = 1D / (fort + 2) + (fort + 1) / 2D;
+            refining = EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
         }
-        catch (NullPointerException e) {
-            e.printStackTrace();
+        if (!event.getWorld().isRemote && !event.isSilkTouching() &&
+                (block == Blocks.DIAMOND_ORE && r < 0.05D * mult ||
+                        block == Blocks.EMERALD_ORE && r < 0.075D * mult ||
+                        block == Blocks.LAPIS_ORE && r < 0.01D * mult ||
+                        block == Blocks.COAL_ORE && r < 0.001D * mult ||
+                        block == Blocks.LIT_REDSTONE_ORE && r < 0.01D * mult ||
+                        block == Blocks.REDSTONE_ORE && r < 0.01D * mult ||
+                        block == Blocks.QUARTZ_ORE && r < 0.01D * mult ||
+                        block == BlocksTC.oreAmber && r < 0.05D * mult ||
+                        block == BlocksTC.oreQuartz && r < 0.05D * mult)) {
+            boolean bonusDrop = event.getWorld().rand.nextDouble() < refining * 0.25;
+            event.getDrops().add(new ItemStack(ItemsTC.nuggets, bonusDrop ? 2 : 1, 10));
         }
     }
 
@@ -169,7 +160,7 @@ public class ToolEventsMixin {
         }
 
         if (b) {
-            event.getWorld().playSound((EntityPlayer)null, event.getPos(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.2F, 0.7F + event.getWorld().rand.nextFloat() * 0.2F);
+            event.getWorld().playSound(null, event.getPos(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.2F, 0.7F + event.getWorld().rand.nextFloat() * 0.2F);
         }
     }
 

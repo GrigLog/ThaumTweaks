@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.armor;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -14,6 +15,8 @@ public abstract class CultRobeMixin extends ItemArmor {
     }
 
     public int getVisDiscount(ItemStack stack, EntityPlayer player) {
-        return (this.armorType == EntityEquipmentSlot.HEAD ? 6 : 4);
+        if (TTConfig.general.armor)
+            return (this.armorType == EntityEquipmentSlot.HEAD ? 6 : 4);
+        return 1;
     }
 }

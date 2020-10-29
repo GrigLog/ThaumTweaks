@@ -15,6 +15,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.common.items.armor.ItemFortressArmor;
@@ -41,22 +44,24 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
 
     public void onArmorTick(World world, EntityPlayer player, ItemStack armor) {
         super.onArmorTick(world, player, armor);
-        if (!world.isRemote && player.ticksExisted % 100 == 0  && hasSet(player)) {
+        if (TTConfig.general.armor && !world.isRemote && player.ticksExisted % 100 == 0  && hasSet(player)) {
             addStrength(player);
         }
     }
 
     //yes, rewriting this one WAS necessary
-    public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    @Inject(method = "getProperties", remap = false, cancellable = true, at=@At("HEAD"))
+    void getProps(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot, CallbackInfoReturnable<ISpecialArmor.ArmorProperties> ci) {
+        if (!TTConfig.general.armor)
+            return;
         ISpecialArmor.ArmorProperties ap = new ISpecialArmor.ArmorProperties(0, 0, armor.getMaxDamage() + 1 - armor.getItemDamage());
         if (player instanceof EntityPlayer) {
             int q = 0;
             for(int a = 1; a < 4; ++a) {
                 ItemStack piece = ((EntityPlayer)player).inventory.armorInventory.get(a);
                 if (!piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
-                    if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask")) {
+                    if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask"))
                         ++ap.Armor;
-                    }
                     if (++q <= 1) {
                         ++ap.Armor;
                         ++ap.Toughness;
@@ -80,7 +85,7 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
         ratio += tryAddRatio(player, armor, damage); //76% / 81% if enough vis
         ap.AbsorbRatio = ratio;
         ap.Priority = priority;
-        return ap;
+        ci.setReturnValue(ap);
     }
 
     void addStrength(EntityPlayer player) {
@@ -88,7 +93,9 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
             player.addPotionEffect(new PotionEffect(MobEffects.STRENGTH, 100, TTConfig.fortArmor.str - 1));
     }
 
-    public boolean hasSet(EntityPlayer player) {
+
+
+    boolean hasSet(EntityPlayer player) {
         for (int i = 1; i < 4; i++) {
             ItemStack slot = player.inventory.armorInventory.get(i);
             if (slot.isEmpty() || !(slot.getItem() instanceof ItemFortressArmor)) {
@@ -110,11 +117,11 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
     }
 
     public boolean handleUnblockableDamage(EntityLivingBase entity, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
-        return true;  //have no clue why azanor didnt use it
+        return TTConfig.general.armor;  //have no clue why azanor didnt use it
     }
 
     public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
-        return TTConfig.fortArmor.vis;
+        return TTConfig.general.armor ? TTConfig.fortArmor.vis : 0;
     }
 
     public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {

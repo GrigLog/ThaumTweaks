@@ -1,6 +1,8 @@
 package griglog.thaumtweaks.mixins.entities;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.TTConfig;
+import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Enchantments;
@@ -50,6 +52,8 @@ public abstract class EntityConfigMixin {
     @Inject(method = "initEntities", at = @At("HEAD"), cancellable = true, remap=false)
     // pech trades' re-prioritization
     private static void initEntitiesHandler(IForgeRegistry<EntityEntry> iForgeRegistry, CallbackInfo ci) {
+        if (!TTConfig.general.pechs)
+            return;
         int id = 0;
         ResourceLocation var10000 = new ResourceLocation("thaumcraft", "CultistPortalGreater");
         int var6 = id + 1;

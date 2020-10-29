@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.entities;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +15,7 @@ public abstract class GolemMixin extends EntityOwnedConstruct {
     }
 
     protected void dropFewItems(boolean flag, int looting) {
-        entityDropItem(new ItemStack(ItemsTC.curio, world.rand.nextInt(3), 2), 0.5F);
+        if (TTConfig.curiosities.allow)
+            entityDropItem(new ItemStack(ItemsTC.curio, world.rand.nextInt(3), 2), 0.5F);
     }
 }

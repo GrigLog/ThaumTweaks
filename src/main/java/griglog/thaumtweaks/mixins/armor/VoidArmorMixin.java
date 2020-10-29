@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.armor;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,14 +22,14 @@ public abstract class VoidArmorMixin extends ItemArmor {
 
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.onUpdate(stack, world, entity, slot, selected);
-        if (!world.isRemote && stack.isItemDamaged() && entity.ticksExisted % 20 == 0 && entity instanceof EntityLivingBase) {
-            stack.damageItem(-3, (EntityLivingBase)entity);
-        }
+        if (!world.isRemote && stack.isItemDamaged() && entity.ticksExisted % 20 == 0 && entity instanceof EntityLivingBase)
+            stack.damageItem(TTConfig.general.armor ? -3 : -1, (EntityLivingBase)entity);
+
     }
 
     public void onArmorTick(World world, EntityPlayer player, ItemStack armor) {
         super.onArmorTick(world, player, armor);
-        if (!world.isRemote && player.ticksExisted % 100 == 0  && hasSet(player)) {
+        if (TTConfig.general.armor && !world.isRemote && player.ticksExisted % 100 == 0  && hasSet(player)) {
             addRegen(player);
         }
     }
@@ -37,7 +38,7 @@ public abstract class VoidArmorMixin extends ItemArmor {
         player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 100));
     }
 
-    public boolean hasSet(EntityPlayer player) {
+    boolean hasSet(EntityPlayer player) {
         for (int i = 0; i < 4; i++) {
             ItemStack slot = player.inventory.armorInventory.get(i);
             if (slot.isEmpty() || !(slot.getItem() instanceof ItemVoidArmor)) {
@@ -45,26 +46,5 @@ public abstract class VoidArmorMixin extends ItemArmor {
             }
         }
         return true;
-    }
-
-    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
-        int q = 0;
-        int ar = 0;
-
-        for(int a = 1; a < 4; ++a) {
-            ItemStack piece = player.inventory.armorInventory.get(a);
-            if (!piece.isEmpty() && piece.getItem() instanceof ItemFortressArmor) {
-                if (piece.hasTagCompound() && piece.getTagCompound().hasKey("mask")) {
-                    ++ar;
-                }
-
-                ++q;
-                if (q <= 1) {
-                    ++ar;
-                }
-            }
-        }
-
-        return ar;
     }
 }

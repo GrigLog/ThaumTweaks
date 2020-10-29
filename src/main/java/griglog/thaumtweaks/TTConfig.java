@@ -22,6 +22,8 @@ public class TTConfig {
     public static Tools tools = new Tools();
     @Config.Name("Golem stats")
     public static GolemStats golemStats = new GolemStats();
+    @Config.Name("Curiosities")
+    public static Curiosities curiosities = new Curiosities();
 
     public static class General {
         @Config.Name("Tweak crafts")
@@ -32,9 +34,17 @@ public class TTConfig {
         public boolean autoInfusion = true;
         @Config.Name("Arcane workbench can autocraft")
         public boolean autoCraft = true;
+        @Config.Name("Tweaked pech trades")
+        public boolean pechs = true;
+        @Config.Name("Rare earth drops are affected by Fortune and Refining")
+        public boolean earths = true;
+        @Config.Name("Buffed armor")
+        public boolean armor = true;
     }
 
     public static class CurBand {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
         @Config.Name("Efficiency of xp absorption")
         public double xpMult = 2;
         @Config.Name("Amount of gained research points")
@@ -42,6 +52,8 @@ public class TTConfig {
     }
 
     public static class FortressMask {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
         @Config.Name("Healing ratio")
         public double healCoeff = 0.1D;
 
@@ -53,6 +65,8 @@ public class TTConfig {
     }
 
     public static class VoidSiphon {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
         @Config.Name("Speed boost")
         public double speed = 10;
         @Config.Name("Decrease of chance to damage a rift")
@@ -60,6 +74,8 @@ public class TTConfig {
     }
 
     public static class RunShield {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
         @Config.Name("Recharge speed boost from inventory")
         public double invBoost = 4;
     }
@@ -123,6 +139,11 @@ public class TTConfig {
     public static class Tools {
         @Config.Name("Primordial crusher has 5*5 mining zone")
         public boolean zone_5 = true;
+    }
+
+    public static class Curiosities {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
     }
 
 

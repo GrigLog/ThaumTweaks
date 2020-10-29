@@ -16,6 +16,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.common.items.armor.ItemVoidRobeArmor;
@@ -34,12 +37,14 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         super.onUpdate(stack, world, entity, slot, selected);
         if (!world.isRemote && stack.isItemDamaged() && entity.ticksExisted % 20 == 0 && entity instanceof EntityLivingBase) {
-            stack.damageItem(-4, (EntityLivingBase)entity);
+            stack.damageItem(TTConfig.general.armor ? -4 : -1, (EntityLivingBase)entity);
         }
     }
 
     public void onArmorTick(World world, EntityPlayer player, ItemStack armor) {
         super.onArmorTick(world, player, armor);
+        if (!TTConfig.general.armor)
+            return;
         if (!world.isRemote && hasSet(player)) {
             if (armorType == EntityEquipmentSlot.HEAD) {
                 if (player.ticksExisted % 60 == 0)
@@ -53,23 +58,26 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
                 if (player.ticksExisted % 40 == 0)
                     clearDebuffs(player, armor);
             }
-
         }
     }
 
-    @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
         Multimap<String, AttributeModifier> attrib = super.getAttributeModifiers(slot, stack);
-        UUID uuid = new UUID((getUnlocalizedName() + slot.toString()).hashCode(), 0);
-        if (slot == armorType) {
-            attrib.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(),
-                    new AttributeModifier(uuid, "Void robe modifier " + armorType,
-                            0.25, 0));
+        if (TTConfig.general.armor) {
+            UUID uuid = new UUID((getUnlocalizedName() + slot.toString()).hashCode(), 0);
+            if (slot == armorType) {
+                attrib.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(),
+                        new AttributeModifier(uuid, "Void robe modifier " + armorType,
+                                0.25, 0));
+            }
         }
         return attrib;
     }
 
-    public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+    @Inject(method = "getProperties", remap = false, cancellable = true, at=@At("HEAD"))
+    void getProps(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot, CallbackInfoReturnable<ISpecialArmor.ArmorProperties> ci) {
+        if (!TTConfig.general.armor)
+            return;
         int priority = 0;
         double ratio = this.damageReduceAmount * TTConfig.voidRobe.ratio / 20;  //80%
         if (source.isMagicDamage() || source.isUnblockable()) {
@@ -78,19 +86,19 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
         }
 
         ratio += tryAddRatio(player, armor, damage);  //90% / 75% if enough vis
-        return new ISpecialArmor.ArmorProperties(priority, ratio, armor.getMaxDamage() + 1 - armor.getItemDamage());
+        ci.setReturnValue(new ISpecialArmor.ArmorProperties(priority, ratio, armor.getMaxDamage() + 1 - armor.getItemDamage()));
     }
 
     public boolean handleUnblockableDamage(EntityLivingBase entity, @Nonnull ItemStack armor, DamageSource source, double damage, int slot) {
-        return true;  //have no clue why azanor didnt use it
+        return TTConfig.general.armor;  //have no clue why azanor didnt use it
     }
 
     public int getVisDiscount(ItemStack stack, EntityPlayer player) {
-        return (this.armorType == EntityEquipmentSlot.HEAD ? 8 : 7);
+        return TTConfig.general.armor ? (this.armorType == EntityEquipmentSlot.HEAD ? 8 : 7) : 5;
     }
 
     public int getMaxCharge(ItemStack var1, EntityLivingBase var2) {
-        return TTConfig.voidRobe.vis;
+        return TTConfig.general.armor ? TTConfig.voidRobe.vis : 0;
     }
 
     public IRechargable.EnumChargeDisplay showInHud(ItemStack var1, EntityLivingBase var2) {

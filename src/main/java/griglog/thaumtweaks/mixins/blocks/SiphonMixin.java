@@ -76,6 +76,6 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
     @Shadow
     public int progress;
 
-    public final int cap = (int) (2000 / TTConfig.voidSiphon.speed);
-    public final double reduceChance = 0.03 / TTConfig.voidSiphon.endurance;
+    public final int cap = (int) (2000 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.speed : 1));
+    public final double reduceChance = 0.03 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.endurance : 1);
 }

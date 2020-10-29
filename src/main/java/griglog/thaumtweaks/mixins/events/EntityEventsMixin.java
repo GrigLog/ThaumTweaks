@@ -124,9 +124,12 @@ public class EntityEventsMixin {
         if (event.getSource().getTrueSource() != null && event.getSource().getTrueSource() instanceof EntityLivingBase) {
             EntityLivingBase attacker = (EntityLivingBase)event.getSource().getTrueSource();
             ItemStack helm = player.inventory.armorInventory.get(3);
-            if (helm != null && !helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 1) {
+            if (!helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 1) {
                 try {
-                    attacker.addPotionEffect(new PotionEffect(MobEffects.WITHER, 20 * TTConfig.fortressMask.witherDuration, TTConfig.fortressMask.witherLevel - 1));
+                    if (TTConfig.fortressMask.allow)
+                        attacker.addPotionEffect(new PotionEffect(MobEffects.WITHER, 20 * TTConfig.fortressMask.witherDuration, TTConfig.fortressMask.witherLevel - 1));
+                    else if (player.world.rand.nextFloat() < event.getAmount() / 10.0F)
+                        attacker.addPotionEffect(new PotionEffect(MobEffects.WITHER, 80));
                 } catch (Exception var6) {
                 }
             }
@@ -136,8 +139,11 @@ public class EntityEventsMixin {
     private static void tryHealingMask(LivingHurtEvent event) {
         EntityPlayer player = (EntityPlayer)event.getSource().getTrueSource();
         ItemStack helm = player.inventory.armorInventory.get(3);
-        if (helm != null && !helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 2) {
-            player.heal(event.getAmount() * (float) TTConfig.fortressMask.healCoeff);
+        if (!helm.isEmpty() && helm.getItem() instanceof ItemFortressArmor && helm.hasTagCompound() && helm.getTagCompound().hasKey("mask") && helm.getTagCompound().getInteger("mask") == 2) {
+            if (TTConfig.fortressMask.allow)
+                player.heal(event.getAmount() * (float) TTConfig.fortressMask.healCoeff);
+            else if (player.world.rand.nextFloat() < event.getAmount() / 12.0F)
+                player.heal(1.0F);
         }
     }
 
