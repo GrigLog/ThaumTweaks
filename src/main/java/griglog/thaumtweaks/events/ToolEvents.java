@@ -35,7 +35,7 @@ public class ToolEvents {
     @SubscribeEvent()
     public static void onBlockBreak(BlockEvent.HarvestDropsEvent event) {
         EntityPlayer player;
-        if ((player = event.getHarvester()) == null)
+        if ((player = event.getHarvester()) == null || player.getActiveHand() == null)
             return;
         ItemStack heldItem = player.getHeldItem(player.getActiveHand());
         if (heldItem.getUnlocalizedName().equals(ItemsTC.primalCrusher.getUnlocalizedName()) && !blocksBreaking && !player.isSneaking()) {

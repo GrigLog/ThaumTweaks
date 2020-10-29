@@ -1,6 +1,7 @@
 package griglog.thaumtweaks.mixins.events;
 
 import griglog.thaumtweaks.SF;
+import griglog.thaumtweaks.ThaumTweaks;
 import griglog.thaumtweaks.events.EventHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +14,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.ForgeHooks;
@@ -67,28 +69,38 @@ public class ToolEventsMixin {
     }
 
     private static void dropEarths(BlockEvent.HarvestDropsEvent event) {
-        Block block = event.getState().getBlock();
-        double r = event.getWorld().rand.nextDouble();
-        double mult = 1;
-        int refining = 0;
-        if (event.getHarvester() != null) {
-            ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
-            int fort = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("fortune"), heldItem);
-            mult = 1D / (fort + 2) + (fort + 1) / 2D;
-            refining = EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
+        try {
+            Block block = event.getState().getBlock();
+            double r = event.getWorld().rand.nextDouble();
+            double mult = 1;
+            int refining = 0;
+            if (event.getHarvester() != null) {
+                ThaumTweaks.LOGGER.info(1);
+                if (event.getHarvester().getActiveHand() != null) {
+                    ThaumTweaks.LOGGER.info(2);
+                    ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
+                    ThaumTweaks.LOGGER.info(3);
+                    int fort = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByLocation("fortune"), heldItem);
+                    mult = 1D / (fort + 2) + (fort + 1) / 2D;
+                    refining = EnumInfusionEnchantment.getInfusionEnchantmentLevel(heldItem, EnumInfusionEnchantment.REFINING);
+                }
+            }
+            if (!event.getWorld().isRemote && !event.isSilkTouching() &&
+                    (block == Blocks.DIAMOND_ORE && r < 0.05D * mult ||
+                            block == Blocks.EMERALD_ORE && r < 0.075D * mult ||
+                            block == Blocks.LAPIS_ORE && r < 0.01D * mult ||
+                            block == Blocks.COAL_ORE && r < 0.001D * mult ||
+                            block == Blocks.LIT_REDSTONE_ORE && r < 0.01D * mult ||
+                            block == Blocks.REDSTONE_ORE && r < 0.01D * mult ||
+                            block == Blocks.QUARTZ_ORE && r < 0.01D * mult ||
+                            block == BlocksTC.oreAmber && r < 0.05D * mult ||
+                            block == BlocksTC.oreQuartz && r < 0.05D * mult)) {
+                boolean bonusDrop = event.getWorld().rand.nextDouble() < refining * 0.25;
+                event.getDrops().add(new ItemStack(ItemsTC.nuggets, bonusDrop ? 2 : 1, 10));
+            }
         }
-        if (!event.getWorld().isRemote && !event.isSilkTouching() &&
-                (block == Blocks.DIAMOND_ORE && r < 0.05D * mult ||
-                block == Blocks.EMERALD_ORE && r < 0.075D * mult ||
-                block == Blocks.LAPIS_ORE && r < 0.01D * mult ||
-                block == Blocks.COAL_ORE && r < 0.001D * mult ||
-                block == Blocks.LIT_REDSTONE_ORE && r < 0.01D * mult ||
-                block == Blocks.REDSTONE_ORE && r < 0.01D * mult ||
-                block == Blocks.QUARTZ_ORE && r < 0.01D * mult ||
-                block == BlocksTC.oreAmber && r < 0.05D * mult ||
-                block == BlocksTC.oreQuartz && r < 0.05D * mult)) {
-            boolean bonusDrop = event.getWorld().rand.nextDouble() < refining * 0.25;
-            event.getDrops().add(new ItemStack(ItemsTC.nuggets, bonusDrop ? 2 : 1, 10));
+        catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
