@@ -15,8 +15,8 @@ import java.util.List;
 
 @Mixin(TileVoidSiphon.class)
 public abstract class SiphonMixin extends TileThaumcraftInventory {
-    public SiphonMixin(int size) {
-        super(size);
+    public SiphonMixin() {
+        super(1);
     }
 
     public void update() {
@@ -76,6 +76,6 @@ public abstract class SiphonMixin extends TileThaumcraftInventory {
     @Shadow
     public int progress;
 
-    public final int cap = (int) (2000 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.speed : 1));
-    public final double reduceChance = 0.03 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.endurance : 1);
+    private static final int cap = (int) (2000 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.speed : 1));
+    private static final double reduceChance = 0.03 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.endurance : 1);
 }
