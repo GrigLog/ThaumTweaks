@@ -36,7 +36,7 @@ public abstract class JarMixin extends BlockTCTile {
                 ((TileJarFillable)tile).facing = 4;
 
             try {
-                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("display"))
+                if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("display"))
                     customName.set(tile, stack.getDisplayName());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

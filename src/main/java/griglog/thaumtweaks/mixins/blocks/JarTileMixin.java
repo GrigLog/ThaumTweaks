@@ -19,14 +19,10 @@ public abstract class JarTileMixin extends TileJar {
         String name = nbt.getString("CustomName");
         if (name != null)
             customName = name;
-        ThaumTweaks.LOGGER.info("read");
-        ThaumTweaks.LOGGER.info(customName);
     }
 
     @Inject(method="writeSyncNBT", at=@At("RETURN"), remap=false, cancellable = true)
     private void writeNBT(NBTTagCompound nbt, CallbackInfoReturnable<NBTTagCompound> ci) {
-        ThaumTweaks.LOGGER.info("write");
-        ThaumTweaks.LOGGER.info(customName);
         if (customName != null)
             nbt.setString("CustomName", customName);
         ci.setReturnValue(nbt);
