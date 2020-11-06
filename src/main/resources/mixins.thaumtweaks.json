@@ -13,6 +13,7 @@
     "blocks.JarTileMixin",
     "blocks.MatrixMixin",
     "blocks.OreMixin",
+    "blocks.PedestalMixin",
     "blocks.SiphonMixin",
     "blocks.workbench.ContainerArcaneMixin",
     "blocks.workbench.SlotArcaneResultMixin",
