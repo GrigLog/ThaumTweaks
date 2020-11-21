@@ -1,7 +1,12 @@
 package griglog.thaumtweaks;
 
 import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Mod.EventBusSubscriber(modid = ThaumTweaks.MODID)
 @Config(modid = ThaumTweaks.MODID, category = "")
 public class TTConfig {
     @Config.Name("General")
@@ -147,8 +152,9 @@ public class TTConfig {
     }
 
 
-
-
-
-
+    @SubscribeEvent
+    public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (event.getModID().equals(ThaumTweaks.MODID))
+            ConfigManager.sync(event.getModID(), Config.Type.INSTANCE);
+    }
 }
