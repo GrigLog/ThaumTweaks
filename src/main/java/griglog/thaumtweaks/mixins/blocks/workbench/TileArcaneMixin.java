@@ -33,8 +33,6 @@ import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.ThaumcraftInvHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
-import thaumcraft.api.capabilities.IPlayerKnowledge;
-import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.crafting.ContainerDummy;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.container.InventoryArcaneWorkbench;
@@ -55,24 +53,23 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
     @Shadow public InventoryArcaneWorkbench inventoryCraft;
     public InventoryArcaneResult inventoryResult;
 
-    private static final EnumFacing[] FACES_GRID = new EnumFacing[] {EnumFacing.UP, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
-    private static final EnumFacing[] FACES_CRYSTALS = new EnumFacing[] {EnumFacing.SOUTH};
-    private static final EnumFacing[] FACES_EXIT = new EnumFacing[] {EnumFacing.DOWN};
+    private static final EnumFacing[] FACES_GRID = new EnumFacing[]{EnumFacing.UP, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST};
+    private static final EnumFacing[] FACES_CRYSTALS = new EnumFacing[]{EnumFacing.SOUTH};
+    private static final EnumFacing[] FACES_EXIT = new EnumFacing[]{EnumFacing.DOWN};
 
     private static final HashMap<Aspect, Integer> aspectSlots = new HashMap<>();
     CrystalHandler crystals;
     GridHandler grid;
     ExitHandler exit;
     public boolean preview = true;  //if true, hoppers cant extract result from exit slot
-    int counter;
-    IArcaneRecipe savedRecipe;
 
-    @Inject(method="<init>", at=@At("RETURN"))
+    int counter;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
     void adjustConstructor(CallbackInfo ci) {
         try {
             inventoryResult = new InventoryArcaneResult(this, (Container) container.get(inventoryCraft));
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         crystals = new CrystalHandler(this, inventoryCraft);
@@ -93,118 +90,107 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
                 if (facing == f)
                     return (T) grid;
             }
-            for (EnumFacing f: FACES_CRYSTALS) {
+            for (EnumFacing f : FACES_CRYSTALS) {
                 if (facing == f)
                     return (T) crystals;
             }
-            for (EnumFacing f: FACES_EXIT) {
+            for (EnumFacing f : FACES_EXIT) {
                 if (facing == f) {
                     if (!exit.getStackInSlot(0).isEmpty())
                         return (T) exit;
-                    return (T)grid;
+                    return (T) grid;
                 }
             }
         }
         return super.getCapability(capability, facing);
     }
 
-    public void tryCrafting(World world, EntityPlayer player, Integer windowId) {
-        if (world.isRemote)
-            return;
-        FakePlayer fake = SF.getFake((WorldServer)world);
-        SF.copyKnowledge(this, fake);
-        IArcaneRecipe recipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(inventoryCraft, fake);
-        savedRecipe = recipe;
-        boolean hasVis = true;
+    public void checkCrafting(World world, EntityPlayer player) {
+        if (player instanceof FakePlayer)   //our poor dummy needs more brains
+            SF.copyKnowledge(this, player);
+
+        boolean powered = world.isBlockPowered(getPos());
+        IRecipe recipe = findRecipe(player, true);
+        if (recipe instanceof IArcaneRecipe) {
+            int vis = (int) (((IArcaneRecipe) recipe).getVis() * (1.0F - CasterManager.getTotalVisDiscount(player)));
+            boolean hasVis = getWorld().isRemote ? auraVisClient >= vis : auraVisServer >= vis;
+            if (hasVis && hasCrystals(recipe) && !powered && TTConfig.general.autoCraft) {
+                autoCraftOneItem((IArcaneRecipe) recipe);
+                return;
+            }
+        }
+        recipe = findRecipe(player, false);
+        if (recipe != null && powered) {
+            updateResultSlot(player, recipe, null);
+        } else { //no recipe is formed on grid
+            if (!inventoryResult.getStackInSlot(0).isEmpty() && preview)
+                inventoryResult.setInventorySlotContents(0, ItemStack.EMPTY);
+        }
+    }
+
+
+    private void updateResultSlot(EntityPlayer player, IRecipe recipe, Integer windowId) {
+        preview = true;
+        ItemStack itemstack = recipe.getCraftingResult(inventoryCraft);
+        inventoryResult.setInventorySlotContents(0, itemstack);
+        if (windowId != null)
+            ((EntityPlayerMP)player).connection.sendPacket(new SPacketSetSlot(windowId, 0, itemstack));
+    }
+
+    private void autoCraftOneItem(IArcaneRecipe recipe) {
+        InventoryCrafting parsedGrid = parseFillers(inventoryCraft);
+        ItemStack itemstack = recipe.getCraftingResult(parsedGrid);
+        ItemStack current = inventoryResult.getStackInSlot(0);
+        int count = current.getCount();
+        if (preview) {
+            count = itemstack.getCount();
+            consumeItems(recipe);
+            preview = false;
+        } else if (count + itemstack.getCount() <= current.getMaxStackSize()) {
+            count += itemstack.getCount();
+            consumeItems(recipe);
+        }
+        current = itemstack.copy();
+        current.setCount(count);
+        inventoryResult.setInventorySlotContents(0, current);
+    }
+
+    private boolean hasCrystals(IRecipe recipe) {
         boolean hasCrystals = true;
-        if (recipe != null) {
-            int vis = (int)(recipe.getVis() * (1.0F - CasterManager.getTotalVisDiscount(fake)));
-            AspectList crystals = recipe.getCrystals();
-            getAura();
-            hasVis = getWorld().isRemote ? auraVisClient >= vis : auraVisServer >= vis;
-            if (crystals != null && crystals.size() > 0) {
-                Aspect[] aspects = crystals.getAspects();
-                for (Aspect aspect: aspects) {
-                    if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(parseFillers(inventoryCraft), EnumFacing.UP),
-                            ThaumcraftApiHelper.makeCrystal(aspect, crystals.getAmount(aspect)),
-                            ThaumcraftInvHelper.InvFilter.STRICT)
-                            < crystals.getAmount(aspect)) {
-                        hasCrystals = false;
-                        break;
-                    }
+        AspectList crystals = ((IArcaneRecipe)recipe).getCrystals();
+        getAura();
+        if (crystals != null && crystals.size() > 0) {
+            Aspect[] aspects = crystals.getAspects();
+            for (Aspect aspect : aspects) {
+                if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(parseFillers(inventoryCraft), EnumFacing.UP),
+                        ThaumcraftApiHelper.makeCrystal(aspect, crystals.getAmount(aspect)),
+                        ThaumcraftInvHelper.InvFilter.STRICT)
+                        < crystals.getAmount(aspect)) {
+                    hasCrystals = false;
+                    break;
                 }
             }
         }
-
-        if (hasVis && hasCrystals) {
-            doCrafting(world, player, windowId);
-        }
+        return hasCrystals;
     }
 
-
-    public void doCrafting(World world, EntityPlayer player, Integer windowId) {  //sets itemstack to exit slot
-        if (world.isRemote)
-            return;
-        EntityPlayerMP entityplayermp = (EntityPlayerMP)player;
-        ItemStack itemstack = ItemStack.EMPTY;
-        IArcaneRecipe arecipe;
-        FakePlayer fake = SF.getFake((WorldServer)world);
-        SF.copyKnowledge(this, fake);
-        InventoryCrafting parsedGrid = parseFillers(inventoryCraft);
-        arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(parsedGrid, fake);
-
-        boolean powered = world.isBlockPowered(getPos());
-        boolean arecipeFound = false;
-        IPlayerKnowledge fakeBrains = getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-        if (arecipe != null && fakeBrains != null
-                && (!powered || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(arecipe))
-                && fakeBrains.isResearchKnown(arecipe.getResearch())) {
-            inventoryResult.setRecipeUsed(arecipe);
-            itemstack = arecipe.getCraftingResult(parsedGrid);
-            arecipeFound = true;
-        } else if (powered) {
-            InventoryCrafting craftInv = new InventoryCrafting(new ContainerDummy(), 3, 3);
-
-            for(int a = 0; a < 9; ++a) {
-                craftInv.setInventorySlotContents(a, parsedGrid.getStackInSlot(a));
-            }
-
-            IRecipe irecipe = CraftingManager.findMatchingRecipe(craftInv, world);
-            if (irecipe != null && (irecipe.isDynamic() || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(irecipe))) {
-                inventoryResult.setRecipeUsed(irecipe);
-                itemstack = irecipe.getCraftingResult(parsedGrid);
-            }
+    private IRecipe findRecipe(EntityPlayer player, boolean parsed) {
+        InventoryCrafting grid;
+        if (parsed)
+            grid = parseFillers(inventoryCraft);
+        else
+            grid = inventoryCraft;
+        IArcaneRecipe arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(grid, player);
+        if (arecipe != null)
+            return arecipe;
+        InventoryCrafting craftInv = new InventoryCrafting(new ContainerDummy(), 3, 3);
+        for (int i = 0; i < 9; ++i) {
+            craftInv.setInventorySlotContents(i, grid.getStackInSlot(i));
         }
-
-        if (!powered && arecipe != null && arecipeFound && TTConfig.general.autoCraft) {  //was not powered with redstone and not config-banned, craft things
-            ItemStack current = inventoryResult.getStackInSlot(0);
-            int count = current.getCount();
-            if (preview) {
-                count = itemstack.getCount();
-                consumeItems(arecipe);
-                preview = false;
-            }
-            else if (count + itemstack.getCount() <= current.getMaxStackSize()) {
-                count += itemstack.getCount();
-                consumeItems(arecipe);
-            }
-            current = itemstack.copy();
-            current.setCount(count);
-            inventoryResult.setInventorySlotContents(0, current);
-            inventoryResult.markDirty();
-        }
-        else { //was opened with hands, show craft result
-            if (inventoryResult.getStackInSlot(0).isEmpty())
-                preview = true;
-            if (preview) {
-                inventoryResult.setInventorySlotContents(0, itemstack);
-                if (windowId != null)
-                    entityplayermp.connection.sendPacket(new SPacketSetSlot(windowId, 0, itemstack));
-            }
-        }
+        return CraftingManager.findMatchingRecipe(craftInv, world);
     }
 
-    void consumeItems(IArcaneRecipe recipe){
+    private void consumeItems(IArcaneRecipe recipe){
         for (int i = 0; i < grid.getSlots(); i++) {
             ItemStack is = grid.getStackInSlot(i);
             if (!is.isEmpty() && !(is.getItem() instanceof ItemFiller))
@@ -238,7 +224,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
     @Override
     public void update() {
         if (!world.isRemote && ++counter % 10 == 0){
-            tryCrafting(world, SF.getFake((WorldServer)world), null);
+            checkCrafting(world, SF.getFake((WorldServer)world));
         }
     }
 
@@ -252,7 +238,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         ItemStackHelper.loadAllItems(nbtCompound, stacks);
 
         for(int a = 0; a < stacks.size(); ++a) {
-            this.inventoryCraft.setInventorySlotContents(a, (ItemStack)stacks.get(a));
+            this.inventoryCraft.setInventorySlotContents(a, stacks.get(a));
         }
         preview = nbtCompound.getBoolean("preview");
         exit.deserializeNBT(nbtCompound);
@@ -273,12 +259,9 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         return nbtCompound;
     }
 
-    @Shadow
-    void getAura(){}
-    @Shadow
-    int auraVisClient;
-    @Shadow
-    int auraVisServer;
+    @Shadow void getAura(){}
+    @Shadow int auraVisClient;
+    @Shadow int auraVisServer;
 
     private static Field container;
     static {

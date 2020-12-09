@@ -49,7 +49,7 @@ public class InventoryArcaneResult extends InventoryCraftResult implements ISide
         ItemStack itemstack = ItemStackHelper.getAndSplit(Collections.singletonList(getStackInSlot(0)), 0, count);
         if (!itemstack.isEmpty())
         {
-            eventHandler.onCraftMatrixChanged(this);
+            eventHandler.detectAndSendChanges();
         }
 
         return itemstack;
