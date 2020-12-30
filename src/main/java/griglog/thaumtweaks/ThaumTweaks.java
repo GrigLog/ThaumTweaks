@@ -24,7 +24,7 @@ public class ThaumTweaks
     public static final String MC_VERSION = "[1.12.2]";
 
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){

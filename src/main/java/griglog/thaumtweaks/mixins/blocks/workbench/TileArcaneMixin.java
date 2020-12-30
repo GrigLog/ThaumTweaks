@@ -113,6 +113,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
         IRecipe recipe = findRecipe(player, true);
         if (recipe instanceof IArcaneRecipe) {
             int vis = (int) (((IArcaneRecipe) recipe).getVis() * (1.0F - CasterManager.getTotalVisDiscount(player)));
+            getAura();
             boolean hasVis = getWorld().isRemote ? auraVisClient >= vis : auraVisServer >= vis;
             if (hasVis && hasCrystals(recipe) && !powered && TTConfig.general.autoCraft) {
                 autoCraftOneItem((IArcaneRecipe) recipe);
@@ -120,7 +121,7 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
             }
         }
         recipe = findRecipe(player, false);
-        if (recipe != null && powered) {
+        if (recipe != null && (powered || !TTConfig.general.autoCraft)) {
             updateResultSlot(player, recipe, null);
         } else { //no recipe is formed on grid
             if (!inventoryResult.getStackInSlot(0).isEmpty() && preview)
@@ -158,7 +159,6 @@ public abstract class TileArcaneMixin extends TileThaumcraft implements ITickabl
     private boolean hasCrystals(IRecipe recipe) {
         boolean hasCrystals = true;
         AspectList crystals = ((IArcaneRecipe)recipe).getCrystals();
-        getAura();
         if (crystals != null && crystals.size() > 0) {
             Aspect[] aspects = crystals.getAspects();
             for (Aspect aspect : aspects) {

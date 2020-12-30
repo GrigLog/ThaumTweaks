@@ -61,7 +61,7 @@ configurations {
 
 
 dependencies {
-    extraLibs('org.spongepowered:mixin:0.8.1-SNAPSHOT') { transitive = false }
+    extraLibs('org.spongepowered:mixin:0.8-SNAPSHOT') { transitive = false }
     compile files('libs/Thaumcraft-1.12.2-6.1.BETA26-deobf.jar')
 }
 
@@ -69,12 +69,11 @@ minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
 jar {
     manifest.attributes(
             "FMLCorePluginContainsFMLMod": true,
-            "ForceLoadAsMod": true,
+            //"ForceLoadAsMod": true,  //disable in dev environment
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             "TweakOrder": 0,
             'MixinConfigs': 'mixins.thaumtweaks.json',
             'FMLCorePlugin': 'griglog.thaumtweaks.core.TTPlugin'
-
     )
 
     from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }){

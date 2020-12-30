@@ -33,36 +33,22 @@ public abstract class ArcaneHandler implements IItemHandler, IItemHandlerModifia
     public ItemStack baseInsert(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
             return ItemStack.EMPTY;
-
         validateSlotIndex(slot);
-
         ItemStack existing = inv.getStackInSlot(slot);
-
         int limit = getSlotLimit(slot);
-
-        if (!existing.isEmpty())
-        {
+        if (!existing.isEmpty()) {
             if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
                 return stack;
-
             limit -= existing.getCount();
         }
-
         if (limit <= 0)
             return stack;
-
         boolean reachedLimit = stack.getCount() > limit;
-
-        if (!simulate)
-        {
+        if (!simulate) {
             if (existing.isEmpty())
-            {
                 inv.setInventorySlotContents(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
-            }
             else
-            {
                 existing.grow(reachedLimit ? limit : stack.getCount());
-            }
         }
         onContentsChanged(slot);
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
@@ -71,36 +57,24 @@ public abstract class ArcaneHandler implements IItemHandler, IItemHandlerModifia
     @Override
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-
         if (amount == 0)
             return ItemStack.EMPTY;
-
         validateSlotIndex(slot);
-
         ItemStack existing = inv.getStackInSlot(slot);
-
         if (existing.isEmpty())
             return ItemStack.EMPTY;
-
         int toExtract = Math.min(amount, existing.getMaxStackSize());
-
-        if (existing.getCount() <= toExtract)
-        {
-            if (!simulate)
-            {
+        if (existing.getCount() <= toExtract) {
+            if (!simulate) {
                 inv.setInventorySlotContents(slot, ItemStack.EMPTY);
                 onContentsChanged(slot);
             }
             return existing;
-        }
-        else
-        {
-            if (!simulate)
-            {
+        } else {
+            if (!simulate) {
                 inv.setInventorySlotContents(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - toExtract));
                 onContentsChanged(slot);
             }
-
             return ItemHandlerHelper.copyStackWithSize(existing, toExtract);
         }
     }
