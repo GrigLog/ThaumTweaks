@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +19,7 @@ public class PedestalMixin extends BlockTCTile {
 
     @Override
     public int getComparatorInputOverride(IBlockState state, World world, BlockPos pos) {
-        if (((TilePedestal)world.getTileEntity(pos)).getStackInSlot(0).isEmpty())
+        if (!TTConfig.blocks.pedestal || ((TilePedestal)world.getTileEntity(pos)).getStackInSlot(0).isEmpty())
             return 0;
         return 15;
     }

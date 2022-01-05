@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -123,15 +124,14 @@ public abstract class MatrixMixin extends TileThaumcraft {
     void checkPillarMaterials() {
         if (this.world.getBlockState(this.pos.add(-1, -2, -1)).getBlock() instanceof BlockPillar && this.world.getBlockState(this.pos.add(1, -2, -1)).getBlock() instanceof BlockPillar && this.world.getBlockState(this.pos.add(1, -2, 1)).getBlock() instanceof BlockPillar && this.world.getBlockState(this.pos.add(-1, -2, 1)).getBlock() instanceof BlockPillar) {
             if (this.world.getBlockState(this.pos.add(-1, -2, -1)).getBlock() == BlocksTC.pillarAncient && this.world.getBlockState(this.pos.add(1, -2, -1)).getBlock() == BlocksTC.pillarAncient && this.world.getBlockState(this.pos.add(1, -2, 1)).getBlock() == BlocksTC.pillarAncient && this.world.getBlockState(this.pos.add(-1, -2, 1)).getBlock() == BlocksTC.pillarAncient) {
-                this.cycleTime -= 2; //was 1
-                this.costMult -= 0.2F; //was 10%. But whats the point of ancient pillars
-                                       // when you can just use ancient pedestals, right?(
+                this.cycleTime -= TTConfig.matrix.allow ? TTConfig.matrix.ancientSpeedUp : 1;
+                this.costMult -= TTConfig.matrix.allow ? TTConfig.matrix.ancientDiscount : 0.1;
                 this.stabilityReplenish -= 0.1F;
             }
 
             if (this.world.getBlockState(this.pos.add(-1, -2, -1)).getBlock() == BlocksTC.pillarEldritch && this.world.getBlockState(this.pos.add(1, -2, -1)).getBlock() == BlocksTC.pillarEldritch && this.world.getBlockState(this.pos.add(1, -2, 1)).getBlock() == BlocksTC.pillarEldritch && this.world.getBlockState(this.pos.add(-1, -2, 1)).getBlock() == BlocksTC.pillarEldritch) {
-                this.cycleTime -= 4; //was 3
-                this.costMult += 0.1F; //was 5%
+                this.cycleTime -= TTConfig.matrix.allow ? TTConfig.matrix.eldritchSpeedUp : 3;
+                this.costMult += TTConfig.matrix.allow ? TTConfig.matrix.eldritchIncrease : 0.05;
                 this.stabilityReplenish += 0.2F;
             }
         }
@@ -144,12 +144,12 @@ public abstract class MatrixMixin extends TileThaumcraft {
         for(int a = 0; a < 4; ++a) {
             Block b = this.world.getBlockState(this.pos.add(xm[a], -3, zm[a])).getBlock();
             if (b == BlocksTC.matrixSpeed) {
-                dCycleTime -= 1.5; //was 1
-                this.costMult += 0.02F; //was 1%
+                dCycleTime -= TTConfig.matrix.allow ? TTConfig.matrix.stoneSpeedSpeed : 1;
+                this.costMult += TTConfig.matrix.allow ? TTConfig.matrix.stoneSpeedCost : 0.01;
             }
             if (b == BlocksTC.matrixCost) {
-                dCycleTime += 1;
-                this.costMult -= 0.1F;  //was 2%, completely pointless
+                dCycleTime += TTConfig.matrix.allow ? TTConfig.matrix.stoneSlowSpeed : 1;
+                this.costMult -= TTConfig.matrix.allow ? TTConfig.matrix.stoneSlowCost : 0.02;
             }
         }
         this.cycleTime += dCycleTime;
@@ -161,11 +161,11 @@ public abstract class MatrixMixin extends TileThaumcraft {
             int z = this.pos.getZ() - pedPos.getZ();
             Block block = this.world.getBlockState(pedPos).getBlock();
             if (block == BlocksTC.pedestalEldritch) {
-                this.costMult -= 0.002F; //was 0.25%
+                this.costMult -= TTConfig.matrix.allow ? TTConfig.matrix.pedestalEldritchCost : 0.0025;
             }
 
             if (block == BlocksTC.pedestalAncient) {
-                this.costMult -= 0.003F;  //1% was way too op
+                this.costMult -= TTConfig.matrix.allow ? TTConfig.matrix.pedestalAncientCost : 0.01;
             }
         }
     }

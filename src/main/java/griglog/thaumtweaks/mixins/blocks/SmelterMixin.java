@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.blocks;
 
+import griglog.thaumtweaks.TTConfig;
 import net.minecraft.util.EnumFacing;
 import org.spongepowered.asm.mixin.Mixin;
 import thaumcraft.common.tiles.TileThaumcraftInventory;
@@ -11,6 +12,8 @@ public abstract class SmelterMixin extends TileThaumcraftInventory {
     private static final int[] slotItems = new int[]{0};
 
     public int[] getSlotsForFace(EnumFacing face) {
+        if (!TTConfig.blocks.smeltery)
+            return new int[0];
         return (face == EnumFacing.DOWN || face == getFacing().getOpposite()) ? slotFuel : slotItems;
     }
 

@@ -29,6 +29,10 @@ public class TTConfig {
     public static GolemStats golemStats = new GolemStats();
     @Config.Name("Curiosities")
     public static Curiosities curiosities = new Curiosities();
+    @Config.Name("Blocks")
+    public static Blocks blocks = new Blocks();
+    @Config.Name("Infusion matrix")
+    public static Matrix matrix = new Matrix();
 
     public static class General {
         @Config.Name("Tweak crafts")
@@ -150,6 +154,44 @@ public class TTConfig {
         @Config.Name("Allow tweaking")
         public boolean allow = true;
     }
+
+    public static class Blocks {
+        @Config.Name("Pedestals output redstone signal")
+        public boolean pedestal = true;
+        @Config.Name("Smelteries can be accessed by hoppers")
+        public boolean smeltery = true;
+    }
+
+    public static class Matrix {
+        @Config.Name("Allow tweaking")
+        public boolean allow = true;
+        @Config.Comment("Resulting time (in ticks) between matrix eating 1 essentia point = 1/2 * (10 - (int)(all speed bonuses)). Its never less than 1 tick, obviously.")
+        @Config.Name("4 Ancient pillars cost discount (base TC: 0.1)")
+        public double ancientDiscount = 0.2;
+        @Config.Name("4 Ancient pillars speed bonus (base TC: 1)")
+        public int ancientSpeedUp = 0;
+
+        @Config.Name("4 Eldritch pillars cost increase (base TC: 0.05)")
+        public double eldritchIncrease = 0.2;
+        @Config.Name("4 Eldritch pillars speed bonus (base TC: 3)")
+        public int eldritchSpeedUp = 2;
+
+        @Config.Name("Each Speed stone speed bonus (base TC: 1)")
+        public double stoneSpeedSpeed = 1.5;
+        @Config.Name("Each Speed stone cost increase (base TC: 0.01)")
+        public double stoneSpeedCost = 0.1;
+
+        @Config.Name("Each Cost stone speed decrease (base TC: 1)")
+        public double stoneSlowSpeed = 1;
+        @Config.Name("Each Cost stone cost discount (base TC: 0.02)")
+        public double stoneSlowCost = 0.1;
+
+        @Config.Name("Each Eldricth pedestal cost discount (base TC: 0.0025")
+        public double pedestalEldritchCost = 0.002;
+        @Config.Name("Each Ancient pedestal cost discount (base TC: 0.01")
+        public double pedestalAncientCost = 0.003;
+    }
+
 
 
     @SubscribeEvent
