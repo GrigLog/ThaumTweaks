@@ -1,21 +1,17 @@
 package griglog.thaumtweaks.mixins.events;
 
-import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
-import griglog.thaumtweaks.ThaumTweaks;
 import griglog.thaumtweaks.events.EventHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.ForgeHooks;

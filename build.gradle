@@ -1,50 +1,99 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            name = "forge"
+            url = "https://maven.minecraftforge.net/"
+        }       
+		maven {
+            name = "github"
+            url = "https://github.com/juanmuscaria/maven/raw/master"
+        }
         maven {
             name = 'sponge'
             url = 'https://repo.spongepowered.org/maven'
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle2:[2.3-1.0.0-SNAPSHOT,)'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 
-plugins {
-    id 'org.spongepowered.plugin' version '0.8.1'
-}
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
-
-
-ext.config = parseConfig(file('build.properties'))
-
-version = "${config.version}"
-group = "com.griglog.thaumtweaks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "thaumtweaks"
-
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
-
-minecraft {
-    version = "1.12.2-14.23.5.2823"
-    runDir = "run"
-    mappings = "snapshot_20171003"  // i wanted stable_39, but thaum is too old for this...
-}
 
 repositories {
     mavenCentral()
     maven {
         name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+        url = 'https://repo.spongepowered.org/maven'
     }
-    flatDir {
-        dirs 'libs'
+    //maven { url = "https://dist.creeper.host/Sponge/maven" }
+	flatDir {
+		dirs 'libs'
+	}
+}
+
+version = mod_version
+group = mod_group
+archivesBaseName = mod_archives_name
+idea.module.inheritOutputDirs = true  //without this models dont load for some reason...
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+minecraft {
+	version = mc_version + "-" + forge_version
+    mappings = "snapshot_20171003"
+	runDir = "run"
+    
+	replace '@VERSION@', project.version
+	// makeObfSourceJar = false
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version,
+		'mod_id': mod_id,
+		'mod_name': mod_name,
+		'mod_author': mod_author,
+		'mod_description': mod_description,
+		'mc_version': mc_version,
+		'mod_version': mod_version,
+		'mod_icon': mod_icon
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+configurations {
+    extraLibs
+    implementation.extendsFrom(extraLibs)
+}
+dependencies {
+	//compile name: 'Baubles-1.12-1.5.2-dev'
+    extraLibs('org.spongepowered:mixin:0.8-SNAPSHOT') { transitive = false }
+    compile files('libs/Thaumcraft-1.12.2-6.1.BETA26-deobf.jar')
+}
+
+minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
+jar {
+    manifest.attributes(
+            "FMLCorePluginContainsFMLMod": true,
+            //"ForceLoadAsMod": true,  //disable in dev environment
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            "TweakOrder": 0,
+            'MixinConfigs': 'mixins.thaumtweaks.json',
+            'FMLCorePlugin': 'griglog.thaumtweaks.core.TTPlugin'
+    )
+    from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }){
+        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
     }
 }
 
@@ -54,55 +103,17 @@ sourceSets {
     }
 }
 
-configurations {
-    extraLibs
-    implementation.extendsFrom(extraLibs)
+task devJar(type: Jar) {
+	classifier = 'dev'
+	from sourceSets.main.output
 }
 
-
-dependencies {
-    extraLibs('org.spongepowered:mixin:0.8.1-SNAPSHOT') { transitive = false }
-    compile files('libs/Thaumcraft-1.12.2-6.1.BETA26-deobf.jar')
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
-minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
-jar {
-    manifest.attributes(
-            "FMLCorePluginContainsFMLMod": true,
-            "ForceLoadAsMod": true,
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            "TweakOrder": 0,
-            'MixinConfigs': 'mixins.thaumtweaks.json',
-            'FMLCorePlugin': 'griglog.thaumtweaks.core.TTPlugin'
-
-    )
-
-    from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }){
-        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
-    }
-}
-
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-def parseConfig(File config) {
-    if(config.exists()){
-        config.withReader {
-            def prop = new Properties()
-            prop.load(it)
-            return (new ConfigSlurper().parse(prop))
-        }
-    } else {
-        return null
-    }
+artifacts {
+	archives devJar
+	archives sourcesJar
 }

@@ -1,29 +1,23 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+.git/*
+.gradle/*
+.idea/*
+.settings/*
+.metadata/*
+bin/*
+build/*
+run/*
+minecraft/*
+eclipse/*
+.apt_generated/*
+.apt_generated_tests/*
 
-# idea
-out
+.project
+.classpath
+
+*.iml
 *.ipr
 *.iws
-*.iml
-.idea
+*.launch
+.factorypath
 
-# gradle
-build
-.gradle
-
-# other
-eclipse
-run
-libs
-logs
-forge-1.12.2-*
-LICENSE*
-README.txt
-CREDITS.txt
-
+forge*changelog.txt

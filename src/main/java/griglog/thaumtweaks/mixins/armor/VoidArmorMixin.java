@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import thaumcraft.common.items.armor.ItemFortressArmor;
 import thaumcraft.common.items.armor.ItemVoidArmor;
 
 @Mixin(ItemVoidArmor.class)

@@ -1,7 +1,6 @@
 package griglog.thaumtweaks.events;
 
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import thaumcraft.api.blocks.BlocksTC;
 
 public class EventHelper {

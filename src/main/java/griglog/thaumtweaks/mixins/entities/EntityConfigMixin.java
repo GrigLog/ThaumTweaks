@@ -1,9 +1,6 @@
 package griglog.thaumtweaks.mixins.entities;
 
-import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
-import griglog.thaumtweaks.ThaumTweaks;
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;

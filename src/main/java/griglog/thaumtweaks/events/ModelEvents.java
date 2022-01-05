@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.events;
 
-import griglog.thaumtweaks.items.ItemFiller;
 import griglog.thaumtweaks.items.TTItems;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

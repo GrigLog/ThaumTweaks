@@ -9,13 +9,11 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -25,17 +23,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.capabilities.IPlayerKnowledge;
-import thaumcraft.api.capabilities.ThaumcraftCapabilities;
-import thaumcraft.api.crafting.IThaumcraftRecipe;
-import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.golems.IGolemAPI;
 import thaumcraft.common.golems.EntityThaumcraftGolem;
 import thaumcraft.common.golems.GolemInteractionHelper;
 import thaumcraft.common.lib.network.FakeNetHandlerPlayServer;
-
-import java.util.UUID;
 
 @Mixin(GolemInteractionHelper.class)
 public class GolemHelperMixin {

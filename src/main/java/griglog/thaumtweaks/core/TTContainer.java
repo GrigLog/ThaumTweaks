@@ -2,7 +2,6 @@ package griglog.thaumtweaks.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;

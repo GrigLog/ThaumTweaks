@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.mixins.blocks;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +13,10 @@ import thaumcraft.common.blocks.devices.BlockPedestal;
 import thaumcraft.common.tiles.TileThaumcraft;
 import thaumcraft.common.tiles.crafting.TileInfusionMatrix;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @Mixin(TileInfusionMatrix.class)
 public abstract class MatrixMixin extends TileThaumcraft {

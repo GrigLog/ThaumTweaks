@@ -1,7 +1,6 @@
 package griglog.thaumtweaks.crafts;
 
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.ThaumcraftApi;
@@ -10,9 +9,6 @@ import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.blocks.BlocksTC;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 import thaumcraft.api.items.ItemsTC;
-import thaumcraft.common.config.ConfigRecipes;
-
-import java.lang.reflect.Field;
 
 public class ArcaneTweaks{
     static ResourceLocation defaultGroup = new ResourceLocation("");

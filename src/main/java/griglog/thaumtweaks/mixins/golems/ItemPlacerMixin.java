@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.mixins.golems;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,14 +1,11 @@
 package griglog.thaumtweaks.crafts;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.ThaumcraftApiHelper;
@@ -19,8 +16,6 @@ import thaumcraft.api.crafting.InfusionRecipe;
 import thaumcraft.api.items.ItemsTC;
 import thaumcraft.common.config.ConfigItems;
 import thaumcraft.common.lib.enchantment.EnumInfusionEnchantment;
-
-import java.util.HashMap;
 
 public class InfusionTweaks {
     public static void override() {

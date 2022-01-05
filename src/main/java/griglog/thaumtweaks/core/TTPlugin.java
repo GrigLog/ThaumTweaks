@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.core;
 
-import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.CoreModManager;

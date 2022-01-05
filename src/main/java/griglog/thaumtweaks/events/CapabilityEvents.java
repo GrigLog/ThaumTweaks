@@ -1,8 +1,6 @@
 package griglog.thaumtweaks.events;
 
-import griglog.thaumtweaks.SF;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;

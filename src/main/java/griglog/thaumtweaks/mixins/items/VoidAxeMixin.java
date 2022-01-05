@@ -1,12 +1,7 @@
 package griglog.thaumtweaks.mixins.items;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thaumcraft.common.items.tools.ItemVoidAxe;
 
 @Mixin(ItemVoidAxe.class)

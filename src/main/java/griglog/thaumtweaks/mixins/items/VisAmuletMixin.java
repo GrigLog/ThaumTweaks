@@ -1,9 +1,7 @@
 package griglog.thaumtweaks.mixins.items;
 
 import baubles.api.BaublesApi;
-import baubles.api.IBauble;
 import baubles.api.cap.IBaublesItemHandler;
-import griglog.thaumtweaks.SF;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

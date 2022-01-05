@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.crafts;
 
-import griglog.thaumtweaks.items.ItemFiller;
 import griglog.thaumtweaks.items.TTItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,5 @@
 package griglog.thaumtweaks.mixins.entities;
 
-import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.item.ItemStack;

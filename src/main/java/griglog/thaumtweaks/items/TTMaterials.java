@@ -3,14 +3,9 @@ package griglog.thaumtweaks.items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 import thaumcraft.api.ThaumcraftMaterials;
-import thaumcraft.api.golems.EnumGolemTrait;
-import thaumcraft.api.golems.parts.GolemMaterial;
 import thaumcraft.api.items.ItemsTC;
-
-import java.lang.reflect.Field;
 
 public class TTMaterials {
     public static Item.ToolMaterial TOOLMAT_PRIMALVOID = EnumHelper.addToolMaterial("PRIMALVOID", 5, 5000, 10.0F, 4.0F, 20).setRepairItem(new ItemStack(ItemsTC.ingots, 1, 1));
