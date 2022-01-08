@@ -65,13 +65,7 @@ public class ContainerArcaneCrafter extends Container{
         onCraftMatrixChanged(crafter.inventoryCraft);
     }
 
-    /*public void addListener(IContainerListener par1ICrafting) {
-        super.addListener(par1ICrafting);
-        crafter.updateAura();
-        par1ICrafting.sendWindowProperty(this, 0, crafter.auraVisServer);
-    }*/
-
-    //called every tick when tha player looks into gui
+    //called every tick when player looks into gui
     public void detectAndSendChanges() {
         //ThaumTweaks.LOGGER.info("detectAndSendChanges");
         super.detectAndSendChanges();
@@ -80,30 +74,9 @@ public class ContainerArcaneCrafter extends Container{
             lastCheck = t + 500L;
             crafter.updateAura();
         }
-        if (lastVis != crafter.auraVisServer) {
-            IArcaneRecipe recipe = crafter.findRecipe(inv.player, true);
-            boolean hasVis, hasCrystals=true;
-            if (recipe != null) {
-                int vis = recipe.getVis();
-                AspectList crystals = recipe.getCrystals();
-                crafter.updateAura();
-                hasVis = crafter.getWorld().isRemote ? crafter.auraVisClient >= vis : crafter.auraVisServer >= vis;
-                if (crystals != null && crystals.size() > 0) {
-                    Aspect[] aspects = crystals.getAspects();
-                    for(int i = 0; i < aspects.length; ++i) {
-                        Aspect aspect = aspects[i];
-                        if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(crafter.inventoryCraft, EnumFacing.UP), ThaumcraftApiHelper.makeCrystal(aspect, crystals.getAmount(aspect)), ThaumcraftInvHelper.InvFilter.STRICT) < crystals.getAmount(aspect)) {
-                            hasCrystals = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        for(int i = 0; i < listeners.size(); ++i) {
-            IContainerListener icrafting = (IContainerListener)listeners.get(i);
+        for (IContainerListener listener : listeners) {
             if (lastVis != crafter.auraVisServer) {
-                icrafting.sendWindowProperty(this, 0, crafter.auraVisServer);
+                listener.sendWindowProperty(this, 0, crafter.auraVisServer);
             }
         }
         lastVis = crafter.auraVisServer;
@@ -117,62 +90,9 @@ public class ContainerArcaneCrafter extends Container{
     }
 
     public void onCraftMatrixChanged(IInventory par1IInventory) {
-        //ThaumTweaks.LOGGER.info("onMatrixChanged");
-
-        /*IArcaneRecipe recipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(crafter.inventoryCraft, inv.player);
-        boolean hasVis = true;
-        boolean hasCrystals = true;
-        if (recipe != null) {
-            int vis = recipe.getVis();
-            vis = (int)((float)vis * (1.0F - CasterManager.getTotalVisDiscount(inv.player)));
-            AspectList crystals = recipe.getCrystals();
-            crafter.updateAura();
-            hasVis = crafter.getWorld().isRemote ? crafter.auraVisClient >= vis : crafter.auraVisServer >= vis;
-            if (crystals != null && crystals.size() > 0) {
-                Aspect[] aspects = crystals.getAspects();
-                for(int i = 0; i < aspects.length; ++i) {
-                    Aspect aspect = aspects[i];
-                    if (ThaumcraftInvHelper.countTotalItemsIn(ThaumcraftInvHelper.wrapInventory(crafter.inventoryCraft, EnumFacing.UP), ThaumcraftApiHelper.makeCrystal(aspect, crystals.getAmount(aspect)), ThaumcraftInvHelper.InvFilter.STRICT) < crystals.getAmount(aspect)) {
-                        hasCrystals = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (hasVis && hasCrystals) {
-            slotChangedCraftingGrid(crafter.getWorld(), inv.player, crafter.inventoryCraft, crafter.inventoryResult);
-        }
-
-        super.detectAndSendChanges();*/
     }
 
     protected void slotChangedCraftingGrid(World world, EntityPlayer player, InventoryCrafting craftMat, InventoryCraftResult craftRes) {
-        ThaumTweaks.LOGGER.info("slotChangedCraftingGrid");
-        /*if (!world.isRemote) {
-            EntityPlayerMP entityplayermp = (EntityPlayerMP)player;
-            ItemStack itemstack = ItemStack.EMPTY;
-            IArcaneRecipe arecipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(craftMat, entityplayermp);
-            if (arecipe != null && (arecipe.isDynamic() || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(arecipe)) && ThaumcraftCapabilities.getKnowledge(player).isResearchKnown(arecipe.getResearch())) {
-                craftRes.setRecipeUsed(arecipe);
-                itemstack = arecipe.getCraftingResult(craftMat);
-            } else {
-                InventoryCrafting craftInv = new InventoryCrafting(new ContainerDummy(), 3, 3);
-
-                for(int a = 0; a < 9; ++a) {
-                    craftInv.setInventorySlotContents(a, craftMat.getStackInSlot(a));
-                }
-
-                IRecipe irecipe = CraftingManager.findMatchingRecipe(craftInv, world);
-                if (irecipe != null && (irecipe.isDynamic() || !world.getGameRules().getBoolean("doLimitedCrafting") || entityplayermp.getRecipeBook().isUnlocked(irecipe))) {
-                    craftRes.setRecipeUsed(irecipe);
-                    itemstack = irecipe.getCraftingResult(craftMat);
-                }
-            }
-
-            craftRes.setInventorySlotContents(0, itemstack);
-            entityplayermp.connection.sendPacket(new SPacketSetSlot(windowId, 0, itemstack));
-        }*/
     }
 
     public void onContainerClosed(EntityPlayer par1EntityPlayer) {

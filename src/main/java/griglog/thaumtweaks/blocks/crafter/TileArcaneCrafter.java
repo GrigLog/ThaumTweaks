@@ -13,17 +13,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import thaumcraft.api.ThaumcraftApiHelper;
 import thaumcraft.api.ThaumcraftInvHelper;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.blocks.BlocksTC;
+import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.crafting.ContainerDummy;
 import thaumcraft.api.crafting.IArcaneRecipe;
 import thaumcraft.common.container.InventoryArcaneWorkbench;
@@ -45,7 +49,6 @@ public class TileArcaneCrafter extends TileEntity {
     private static final HashMap<Aspect, Integer> aspectSlots = new HashMap<Aspect, Integer>() {{
         put(Aspect.AIR, 0); put(Aspect.FIRE, 1); put(Aspect.WATER, 2); put(Aspect.EARTH, 3); put(Aspect.ORDER, 4); put(Aspect.ENTROPY, 5);
     }};
-    //public static final Aspect[] aspectGrid = new Aspect[] {Aspect.AIR, Aspect.FIRE, Aspect.WATER, Aspect.EARTH, Aspect.ORDER, Aspect.ENTROPY};
     CrystalHandler crystals;
     GridHandler grid;
     ExitHandler exit;
@@ -69,10 +72,12 @@ public class TileArcaneCrafter extends TileEntity {
     public void checkCrafting() {
         if (world.isRemote)
             return;
-        FakePlayer player = SF.getFake((WorldServer) world);
-        SF.copyKnowledge(this, player);
-        IArcaneRecipe recipe = findRecipe(player, true);
+        InventoryCrafting grid = parseFillers(inventoryCraft);
+        FakePlayer player = SF.getFake((WorldServer)world);
+        IArcaneRecipe recipe = ThaumcraftCraftingManager.findMatchingArcaneRecipe(grid, player);
         if (recipe == null)
+            return;
+        if (!getCapability(ThaumcraftCapabilities.KNOWLEDGE, null).isResearchKnown(recipe.getResearch()))
             return;
         int vis = recipe.getVis();
         updateAura();
@@ -115,14 +120,6 @@ public class TileArcaneCrafter extends TileEntity {
         return hasCrystals;
     }
 
-    public IArcaneRecipe findRecipe(EntityPlayer player, boolean parsed) {
-        InventoryCrafting grid;
-        if (parsed)
-            grid = parseFillers(inventoryCraft);
-        else
-            grid = inventoryCraft;
-        return ThaumcraftCraftingManager.findMatchingArcaneRecipe(grid, player);
-    }
 
     private void consumeItems(IArcaneRecipe recipe){
         for (int i = 0; i < grid.getSlots(); i++) {
@@ -143,7 +140,7 @@ public class TileArcaneCrafter extends TileEntity {
         }
     }
 
-    InventoryCrafting parseFillers(InventoryArcaneWorkbench inv) {
+    private InventoryCrafting parseFillers(InventoryArcaneWorkbench inv) {
         InventoryCrafting res = new InventoryArcaneWorkbench(null, new ContainerDummy());
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack stack = inv.getStackInSlot(i);
@@ -167,15 +164,15 @@ public class TileArcaneCrafter extends TileEntity {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             for (EnumFacing f : FACES_GRID) {
                 if (facing == f)
-                    return (T) grid;
+                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(grid);
             }
             for (EnumFacing f : FACES_CRYSTALS) {
                 if (facing == f)
-                    return (T) crystals;
+                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(crystals);
             }
             for (EnumFacing f : FACES_EXIT) {
                 if (facing == f) {
-                    return (T) exit;
+                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(exit);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.events;
 
+import griglog.thaumtweaks.blocks.crafter.TileArcaneCrafter;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -21,7 +22,7 @@ public class CapabilityEvents {
 
     @SubscribeEvent
     public static void attachCapabilitiesTiles(AttachCapabilitiesEvent<TileEntity> event) {
-        if (event.getObject() instanceof TileArcaneWorkbench) {
+        if (event.getObject() instanceof TileArcaneCrafter) {
             event.addCapability(PlayerKnowledge.Provider.NAME, new PlayerKnowledge.Provider());
         }
     }

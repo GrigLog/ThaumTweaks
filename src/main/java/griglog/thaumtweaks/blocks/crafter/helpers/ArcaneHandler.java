@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.blocks.crafter.helpers;
 
+import griglog.thaumtweaks.ThaumTweaks;
 import griglog.thaumtweaks.blocks.crafter.TileArcaneCrafter;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
