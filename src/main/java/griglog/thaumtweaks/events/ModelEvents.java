@@ -13,7 +13,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ModelEvents {
     @SubscribeEvent
     public static void regModels(ModelRegistryEvent event) {
-        defaultModel(TTItems.Filler);
+        defaultModel(TTItems.filler);
+        defaultModel(TTItems.arcaneCrafterItem);
     }
 
     static void defaultModel(Item item) {

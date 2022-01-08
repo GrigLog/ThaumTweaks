@@ -16,7 +16,7 @@ public class CustomCrafts {
                 new ShapedArcaneRecipe(defaultGroup, "",
                         40,
                         (new AspectList()),
-                        new ItemStack(TTItems.Filler, 4),
+                        new ItemStack(TTItems.filler, 4),
                         " P ", "PWP", " P ",
                         'W', new ItemStack(BlocksTC.arcaneWorkbench),
                         'P', new ItemStack(Items.PAPER)));

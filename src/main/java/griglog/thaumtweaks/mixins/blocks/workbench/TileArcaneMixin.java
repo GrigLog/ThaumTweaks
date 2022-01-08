@@ -2,10 +2,10 @@ package griglog.thaumtweaks.mixins.blocks.workbench;
 
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
-import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
-import griglog.thaumtweaks.blocks.workbench.itemhandlers.CrystalHandler;
-import griglog.thaumtweaks.blocks.workbench.itemhandlers.ExitHandler;
-import griglog.thaumtweaks.blocks.workbench.itemhandlers.GridHandler;
+import griglog.thaumtweaks.blocks.crafter.helpers.InventoryArcaneResult;
+import griglog.thaumtweaks.blocks.crafter.helpers.CrystalHandler;
+import griglog.thaumtweaks.blocks.crafter.helpers.ExitHandler;
+import griglog.thaumtweaks.blocks.crafter.helpers.GridHandler;
 import griglog.thaumtweaks.items.ItemFiller;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

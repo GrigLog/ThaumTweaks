@@ -1,20 +1,20 @@
-package griglog.thaumtweaks.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.crafter.helpers;
 
+import griglog.thaumtweaks.blocks.crafter.TileArcaneCrafter;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import thaumcraft.common.tiles.crafting.TileArcaneWorkbench;
 
 import javax.annotation.Nonnull;
 
 public abstract class ArcaneHandler implements IItemHandler, IItemHandlerModifiable {
-    TileArcaneWorkbench tile;
+    TileArcaneCrafter tile;
     IInventory inv;
     public ArcaneHandler(TileEntity t, IInventory inv) {
-        tile = (TileArcaneWorkbench) t;
+        tile = (TileArcaneCrafter)t;
         this.inv = inv;
     }
 
@@ -51,7 +51,7 @@ public abstract class ArcaneHandler implements IItemHandler, IItemHandlerModifia
                 existing.grow(reachedLimit ? limit : stack.getCount());
         }
         onContentsChanged(slot);
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Override
@@ -84,8 +84,7 @@ public abstract class ArcaneHandler implements IItemHandler, IItemHandlerModifia
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + inv.getSizeInventory() + ")");
     }
 
-    void onContentsChanged(int slot)
-    {
-
+    void onContentsChanged(int slot) {
+        tile.onInventoryUpdate();
     }
 }

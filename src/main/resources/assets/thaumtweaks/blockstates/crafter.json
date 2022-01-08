@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "thaumtweaks:crafter",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{ }], "inventory": [{ }]
+  }
+}

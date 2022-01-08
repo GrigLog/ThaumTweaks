@@ -1,6 +1,6 @@
-package griglog.thaumtweaks.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.crafter.helpers;
 
-import griglog.thaumtweaks.blocks.workbench.InventoryArcaneResult;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import javax.annotation.Nonnull;
 
 public class ExitHandler extends ArcaneHandler implements INBTSerializable<NBTTagCompound> {
-    public ExitHandler(TileEntity t, InventoryArcaneResult inv) {
+    public ExitHandler(TileEntity t, InventoryCraftResult inv) {
         super(t, inv);
     }
 
@@ -39,15 +39,8 @@ public class ExitHandler extends ArcaneHandler implements INBTSerializable<NBTTa
         return false;
     }
 
-    @Nonnull
-    @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (!((InventoryArcaneResult)inv).canExtractItem(slot, null, null))
-            return ItemStack.EMPTY;
-        return super.extractItem(slot, amount, simulate);
-    }
 
-    @Override
+    @Override  //TODO: I dont have to (de)serialize anything in handlers, as the tile already saves its contents. Right?
     public NBTTagCompound serializeNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagCompound item = new NBTTagCompound();
@@ -63,4 +56,6 @@ public class ExitHandler extends ArcaneHandler implements INBTSerializable<NBTTa
             setStackInSlot(0, new ItemStack(item));
         }
     }
+
+
 }

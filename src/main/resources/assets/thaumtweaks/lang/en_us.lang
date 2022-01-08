@@ -1,2 +1,8 @@
 # Items
-item.thaumtweaks:filler.name=Arcane filler
+item.thaumtweaks:filler.name=Arcane Filler
+item.thaumtweaks:arcane_crafter.name=Arcane Crafter
+
+tile.thaumtweaks:crafter.name=Arcane Crafter
+
+
+itemGroup.thaumtweaks=ThaumTweaks

@@ -1,15 +1,19 @@
 package griglog.thaumtweaks;
 
+import griglog.thaumtweaks.events.GuiHandler;
 import griglog.thaumtweaks.crafts.ArcaneTweaks;
 import griglog.thaumtweaks.crafts.CruicibleTweaks;
 import griglog.thaumtweaks.crafts.CustomCrafts;
 import griglog.thaumtweaks.crafts.InfusionTweaks;
+import griglog.thaumtweaks.items.TTCreativeTab;
 import griglog.thaumtweaks.items.TTMaterials;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,14 +30,20 @@ public class ThaumTweaks
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);
     public static final boolean DEBUG = false;
 
+    public static CreativeTabs tab;
+    @Mod.Instance(MODID)  //why tf am I not allowed to initialize it myself?
+    public static ThaumTweaks instance;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
         if (TTConfig.general.materialOverride)
             TTMaterials.overrideMaterials();
+        tab = new TTCreativeTab();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
     }
 
     @EventHandler

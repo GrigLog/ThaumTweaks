@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.crafter.helpers;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -41,7 +41,6 @@ public class CrystalHandler extends ArcaneHandler{
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return canInsertCrystal(slot, stack) && (getStackInSlot(slot).getCount() < getSlotLimit(slot));
     }
-
 
     @Override
     public ItemStack baseInsert(int slot, ItemStack stack, boolean simulate) {

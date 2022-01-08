@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.blocks.workbench.itemhandlers;
+package griglog.thaumtweaks.blocks.crafter.helpers;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -20,7 +20,6 @@ public class GridHandler extends ArcaneHandler{
     public int getSlots() {
         return 9;
     }
-
     @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {

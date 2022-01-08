@@ -1,4 +1,4 @@
-package griglog.thaumtweaks.blocks.workbench;
+package griglog.thaumtweaks.blocks.crafter.helpers;
 
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
