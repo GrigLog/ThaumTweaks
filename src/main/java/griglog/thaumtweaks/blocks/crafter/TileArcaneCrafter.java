@@ -88,6 +88,8 @@ public class TileArcaneCrafter extends TileEntity {
     }
 
 
+
+
     private void autoCraftOneItem(IArcaneRecipe recipe) {
         InventoryCrafting parsedGrid = parseFillers(inventoryCraft);
         ItemStack itemstack = recipe.getCraftingResult(parsedGrid);

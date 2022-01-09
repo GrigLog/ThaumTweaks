@@ -23,7 +23,6 @@ import thaumcraft.common.container.slot.SlotCrystal;
 public class ContainerArcaneCrafter extends Container{
     private TileArcaneCrafter crafter;
     private InventoryPlayer inv;
-    //public InventoryCraftResult craftResult = new InventoryCraftResult();
     public static int[] xx = new int[]{64, 17, 112, 17, 112, 64};
     public static int[] yy = new int[]{13, 35, 35, 93, 93, 115};
     private int lastVis = -1;
@@ -62,12 +61,12 @@ public class ContainerArcaneCrafter extends Container{
         }
 
         SF.copyKnowledge(inv.player, crafter);
-        onCraftMatrixChanged(crafter.inventoryCraft);
+        detectAndSendChanges();
+        crafter.onInventoryUpdate(); //allows the tile to start crafting immediately after it recognizes you have the research
     }
 
     //called every tick when player looks into gui
     public void detectAndSendChanges() {
-        //ThaumTweaks.LOGGER.info("detectAndSendChanges");
         super.detectAndSendChanges();
         long t = System.currentTimeMillis();
         if (t > lastCheck) {
@@ -82,14 +81,16 @@ public class ContainerArcaneCrafter extends Container{
         lastVis = crafter.auraVisServer;
     }
 
+    @Override
+    public void onCraftMatrixChanged(IInventory inventoryIn) {
+        detectAndSendChanges();
+    }
+
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int par1, int par2) {
         if (par1 == 0) {
             crafter.auraVisClient = par2;
         }
-    }
-
-    public void onCraftMatrixChanged(IInventory par1IInventory) {
     }
 
     protected void slotChangedCraftingGrid(World world, EntityPlayer player, InventoryCrafting craftMat, InventoryCraftResult craftRes) {
@@ -162,6 +163,13 @@ public class ContainerArcaneCrafter extends Container{
         }
 
         return res;
+    }
+
+    //Im not really sure what it does but its required for correct client vis displaying
+    public void addListener(IContainerListener par1ICrafting) {
+        super.addListener(par1ICrafting);
+        crafter.updateAura();
+        par1ICrafting.sendWindowProperty(this, 0, crafter.auraVisServer);
     }
 
     public boolean canMergeSlot(ItemStack stack, Slot slot) {
