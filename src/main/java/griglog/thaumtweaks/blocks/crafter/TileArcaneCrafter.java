@@ -162,19 +162,11 @@ public class TileArcaneCrafter extends TileEntity {
     @Override
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            for (EnumFacing f : FACES_GRID) {
-                if (facing == f)
-                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(grid);
-            }
-            for (EnumFacing f : FACES_CRYSTALS) {
-                if (facing == f)
-                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(crystals);
-            }
-            for (EnumFacing f : FACES_EXIT) {
-                if (facing == f) {
-                    return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(exit);
-                }
-            }
+            if (facing == EnumFacing.DOWN)
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(exit);
+            else if (facing == EnumFacing.getFront(getBlockMetadata()))
+                return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(crystals);
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(grid);
         }
         return super.getCapability(capability, facing);
     }

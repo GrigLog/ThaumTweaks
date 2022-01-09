@@ -28,7 +28,6 @@ public class ThaumTweaks
     public static final String MC_VERSION = "[1.12.2]";
 
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);
-    public static final boolean DEBUG = false;
 
     public static CreativeTabs tab;
     @Mod.Instance(MODID)  //why tf am I not allowed to initialize it myself?
