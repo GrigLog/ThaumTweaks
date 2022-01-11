@@ -73,7 +73,7 @@ minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
 jar {
     manifest.attributes(
             "FMLCorePluginContainsFMLMod": true,
-            //"ForceLoadAsMod": true,  //disable in dev environment
+            "ForceLoadAsMod": true,  //disable in dev environment
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             "TweakOrder": 0,
             'MixinConfigs': 'mixins.thaumtweaks.json',

@@ -21,6 +21,7 @@
     "entities.PechContainerMixin",
     "entities.TaintSeedMixin",
     "events.EntityEventsMixin",
+    "events.GuiEventsMixin",
     "events.PlayerEventsMixin",
     "events.ToolEventsMixin",
     "golems.GolemHelperMixin",

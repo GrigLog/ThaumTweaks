@@ -19,7 +19,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import thaumcraft.Thaumcraft;
 import thaumcraft.common.blocks.*;
+import thaumcraft.common.config.ConfigItems;
+import thaumcraft.common.items.IThaumcraftItems;
 import thaumcraft.common.lib.utils.BlockStateUtils;
 
 import javax.annotation.Nullable;
@@ -30,9 +33,9 @@ public class BlockArcaneCrafter extends Block implements ITileEntityProvider {
         super(Material.WOOD);
         setUnlocalizedName(ThaumTweaks.MODID + ":crafter");
         setRegistryName("crafter");
-        setCreativeTab(ThaumTweaks.tab);
         setResistance(2.0F);
         setHardness(1.5F);
+        setCreativeTab(ConfigItems.TABTC);
 
     }
 
@@ -84,7 +87,7 @@ public class BlockArcaneCrafter extends Block implements ITileEntityProvider {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote && !player.isSneaking()) {
             //it then calls GuiHandler methods on both client and server. Its the only way to sync our gui (and make it show a cursor)
-            player.openGui(ThaumTweaks.instance, 1, world, pos.getX(), pos.getY(), pos.getZ());
+            player.openGui(Thaumcraft.instance, 23, world, pos.getX(), pos.getY(), pos.getZ());
         }
         return true;
     }
