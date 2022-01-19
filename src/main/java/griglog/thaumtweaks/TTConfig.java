@@ -41,8 +41,6 @@ public class TTConfig {
         public boolean materialOverride = true;
         @Config.Name("Golems can start infusions")
         public boolean autoInfusion = true;
-        @Config.Name("Arcane workbench can autocraft")
-        public boolean autoCraft = true;
         @Config.Name("Tweaked pech trades")
         public boolean pechs = true;
         @Config.Name("Rare earth drops are affected by Fortune and Refining")

@@ -3,14 +3,13 @@ package griglog.thaumtweaks.mixins.events;
 import griglog.thaumtweaks.blocks.crafter.TileArcaneCrafter;
 import griglog.thaumtweaks.blocks.crafter.helpers.ContainerArcaneCrafter;
 import griglog.thaumtweaks.blocks.crafter.helpers.GuiArcaneCrafter;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import thaumcraft.api.golems.seals.ISealEntity;
 import thaumcraft.client.gui.*;
@@ -34,12 +33,13 @@ import thaumcraft.proxies.ProxyGUI;
 //At this point I just dream of having some normal errors. Like NullPointerException or ClassCastException.
 //Not this damn "Ive lost some stuff before the game even started, so you'd better figure out what it is".
 @Mixin(ProxyGUI.class)
-public class GuiEventsMixin {
+public abstract class GuiEventsMixin {
+    @SideOnly(Side.CLIENT)
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (world instanceof WorldClient) {
+        if (world.isRemote) {
             switch(ID) {
                 case 1:
-                    return new GuiPech(player.inventory, world, (EntityPech)((WorldClient)world).getEntityByID(x));
+                    return new GuiPech(player.inventory, world, (EntityPech)world.getEntityByID(x));
                 case 2:
                 case 8:
                 case 11:
@@ -65,11 +65,11 @@ public class GuiEventsMixin {
                 case 13:
                     return new GuiArcaneWorkbench(player.inventory, (TileArcaneWorkbench)world.getTileEntity(new BlockPos(x, y, z)));
                 case 14:
-                    return new GuiArcaneBore(player.inventory, world, (EntityArcaneBore)((WorldClient)world).getEntityByID(x));
+                    return new GuiArcaneBore(player.inventory, world, (EntityArcaneBore)world.getEntityByID(x));
                 case 16:
-                    return new GuiTurretBasic(player.inventory, world, (EntityTurretCrossbow)((WorldClient)world).getEntityByID(x));
+                    return new GuiTurretBasic(player.inventory, world, (EntityTurretCrossbow)world.getEntityByID(x));
                 case 17:
-                    return new GuiTurretAdvanced(player.inventory, world, (EntityTurretCrossbowAdvanced)((WorldClient)world).getEntityByID(x));
+                    return new GuiTurretAdvanced(player.inventory, world, (EntityTurretCrossbowAdvanced)world.getEntityByID(x));
                 case 18:
                     ISealEntity se = ItemGolemBell.getSeal(player);
                     if (se != null) {
@@ -103,7 +103,7 @@ public class GuiEventsMixin {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         switch(ID) {
             case 1:
-                return new ContainerPech(player.inventory, world, (EntityPech)((WorldServer)world).getEntityByID(x));
+                return new ContainerPech(player.inventory, world, (EntityPech)world.getEntityByID(x));
             case 3:
                 return new ContainerThaumatorium(player.inventory, (TileThaumatorium)world.getTileEntity(new BlockPos(x, y, z)));
             case 4:
@@ -121,11 +121,11 @@ public class GuiEventsMixin {
             case 13:
                 return new ContainerArcaneWorkbench(player.inventory, (TileArcaneWorkbench)world.getTileEntity(new BlockPos(x, y, z)));
             case 14:
-                return new ContainerArcaneBore(player.inventory, world, (EntityArcaneBore)((WorldServer)world).getEntityByID(x));
+                return new ContainerArcaneBore(player.inventory, world, (EntityArcaneBore)world.getEntityByID(x));
             case 16:
-                return new ContainerTurretBasic(player.inventory, world, (EntityTurretCrossbow)((WorldServer)world).getEntityByID(x));
+                return new ContainerTurretBasic(player.inventory, world, (EntityTurretCrossbow)world.getEntityByID(x));
             case 17:
-                return new ContainerTurretAdvanced(player.inventory, world, (EntityTurretCrossbowAdvanced)((WorldServer)world).getEntityByID(x));
+                return new ContainerTurretAdvanced(player.inventory, world, (EntityTurretCrossbowAdvanced)world.getEntityByID(x));
             case 18:
                 ISealEntity se = ItemGolemBell.getSeal(player);
                 if (se != null) {

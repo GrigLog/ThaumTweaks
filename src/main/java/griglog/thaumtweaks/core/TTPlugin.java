@@ -19,6 +19,7 @@ public class TTPlugin implements IFMLLoadingPlugin {
             File thisFile = new File(TTPlugin.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             File thaumFile = new File(thisFile.getParent(), "Thaumcraft-1.12.2-6.1.BETA26.jar");
             ThaumTweaks.LOGGER.info("Supposed jar location: " + thaumFile.getAbsolutePath());
+            ThaumTweaks.LOGGER.info("Jar exists: " + thaumFile.exists());
             loadModJar(thaumFile);
         } catch (Exception e) {
             e.printStackTrace();

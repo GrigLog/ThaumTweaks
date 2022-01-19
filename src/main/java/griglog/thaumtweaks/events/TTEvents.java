@@ -24,11 +24,6 @@ import java.text.DecimalFormat;
 public class TTEvents {
     static String buffer;
 
-    @SubscribeEvent
-    public static void registerCrafts(RegistryEvent.Register<IRecipe> event) {
-        event.getRegistry().register(new RecipeMergePearls());
-    }
-
     @SubscribeEvent()
     public static void playerGotHitBeforeArmor(LivingHurtEvent event) {
         Entity target = event.getEntityLiving();
