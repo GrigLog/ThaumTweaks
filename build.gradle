@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
         maven {url = "https://maven.minecraftforge.net/"}
 		maven {
             name = "Github with all the libraries Forge has broken"
@@ -23,6 +22,7 @@ apply plugin: 'org.spongepowered.mixin'
 repositories {
     mavenCentral()
     maven {url = 'https://repo.spongepowered.org/maven'}
+    maven { url "https://www.cursemaven.com" }
 	flatDir {dir 'libs'}
 }
 
@@ -60,30 +60,10 @@ processResources {
     }
 }
 
-configurations {
-    extraLibs
-    implementation.extendsFrom(extraLibs)
-}
 dependencies {
-    extraLibs('org.spongepowered:mixin:0.8-SNAPSHOT') { transitive = false }
+    compile 'org.spongepowered:mixin:0.8-SNAPSHOT'
     compile files('libs/Thaumcraft-1.12.2-6.1.BETA26-deobf.jar')
-}
-
-minecraft.coreMod = "griglog.thaumtweaks.core.TTPlugin"
-jar {
-    manifest.attributes(
-            "FMLCorePluginContainsFMLMod": true,
-            "ForceLoadAsMod": true,  //disable in dev environment
-            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            "TweakOrder": 0,
-            'MixinConfigs': 'mixins.thaumtweaks.json',
-            'FMLCorePlugin': 'griglog.thaumtweaks.core.TTPlugin',
-
-            'FMLAT': 'vanilla_at.cfg'
-    )
-    from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }){
-        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
-    }
+    deobfCompile ("curse.maven:mixin-booter-419286:3687785")
 }
 
 sourceSets.main.ext.refMap = "mixins.thaumtweaks.refmap.json"

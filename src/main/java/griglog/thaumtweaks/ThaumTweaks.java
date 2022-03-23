@@ -4,22 +4,18 @@ import griglog.thaumtweaks.crafts.ArcaneTweaks;
 import griglog.thaumtweaks.crafts.CruicibleTweaks;
 import griglog.thaumtweaks.crafts.CustomCrafts;
 import griglog.thaumtweaks.crafts.InfusionTweaks;
-import griglog.thaumtweaks.items.TTCreativeTab;
 import griglog.thaumtweaks.items.TTMaterials;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import thaumcraft.Thaumcraft;
 
 
 @Mod(modid = ThaumTweaks.MODID, name = ThaumTweaks.NAME, version = ThaumTweaks.VERSION, acceptedMinecraftVersions = ThaumTweaks.MC_VERSION,
-dependencies="required-after:baubles@[1.5.2, ); after:thaumcraft@[6.1.BETA26]")
+dependencies="required-after:baubles@[1.5.2, ); required-after:thaumcraft@[6.1.BETA26]; required-after:mixinbooter@[4.2, )")
 public class ThaumTweaks
 {
     public static final String MODID = "thaumtweaks";
