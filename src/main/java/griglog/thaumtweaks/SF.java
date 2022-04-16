@@ -15,9 +15,12 @@ import net.minecraftforge.common.util.FakePlayer;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 
-import java.util.Iterator;
-import java.util.UUID;
-import java.util.Vector;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class SF {  //SomeFuncs
     public static void print(String prefix, String text) {
@@ -62,30 +65,20 @@ public class SF {  //SomeFuncs
         world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, is));
     }
 
-
-    private static Iterator list(ClassLoader CL)
-            throws NoSuchFieldException, SecurityException,
-            IllegalArgumentException, IllegalAccessException {
-        Class CL_class = CL.getClass();
-        while (CL_class != java.lang.ClassLoader.class) {
-            CL_class = CL_class.getSuperclass();
-        }
-        java.lang.reflect.Field ClassLoader_classes_field = CL_class
-                .getDeclaredField("classes");
-        ClassLoader_classes_field.setAccessible(true);
-        Vector classes = (Vector) ClassLoader_classes_field.get(CL);
-        return classes.iterator();
-    }
-
-    public static void printLoadedClasses() throws Exception {
-        ClassLoader myCL = Thread.currentThread().getContextClassLoader();
-        while (myCL != null) {
-            ThaumTweaks.LOGGER.info("ClassLoader: " + myCL);
-            for (Iterator iter = list(myCL); iter.hasNext();) {
-                ThaumTweaks.LOGGER.info("\t" + iter.next());
+    public static List<String> readFile(String filename, String defaultContents){
+        try {
+            Path path = Paths.get(filename);
+            if (!Files.exists(path)) {
+                FileWriter w = new FileWriter(filename);
+                w.write(defaultContents);
+                w.close();
             }
-            myCL = myCL.getParent();
+            return Files.readAllLines(path);
+        } catch (IOException e){
+            return Arrays.asList(defaultContents.split("\n"));
         }
     }
+
+
 
 }

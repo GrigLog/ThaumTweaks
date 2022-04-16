@@ -20,7 +20,7 @@ public class ThaumTweaks
 {
     public static final String MODID = "thaumtweaks";
     public static final String NAME = "ThaumTweaks";
-    public static final String VERSION = "0.3.2";
+    public static final String VERSION = "0.3.4";
     public static final String MC_VERSION = "[1.12.2]";
 
     public static final Logger LOGGER = LogManager.getLogger(ThaumTweaks.MODID);
