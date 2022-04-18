@@ -18,7 +18,6 @@
     "blocks.SmelterMixin",
     "entities.EntityConfigMixin",
     "entities.GolemMixin",
-    "entities.PechContainerMixin",
     "entities.TaintSeedMixin",
     "events.EntityEventsMixin",
     "events.GuiEventsMixin",

@@ -1,18 +1,10 @@
 package griglog.thaumtweaks.mixins.entities;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
 import griglog.thaumtweaks.ThaumTweaks;
-import jdk.nashorn.internal.parser.JSONParser;
-import net.minecraft.command.CommandGive;
-import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
@@ -26,12 +18,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thaumcraft.Thaumcraft;
-import thaumcraft.api.ThaumcraftApiHelper;
-import thaumcraft.api.aspects.Aspect;
-import thaumcraft.api.blocks.BlocksTC;
-import thaumcraft.api.items.ItemsTC;
+
 import thaumcraft.common.config.ConfigEntities;
-import thaumcraft.common.config.ModConfig;
 import thaumcraft.common.entities.EntityFallingTaint;
 import thaumcraft.common.entities.EntityFluxRift;
 import thaumcraft.common.entities.EntityFollowingItem;
@@ -48,13 +36,6 @@ import thaumcraft.common.entities.monster.tainted.*;
 import thaumcraft.common.entities.projectile.*;
 import thaumcraft.common.golems.EntityThaumcraftGolem;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @Mixin(ConfigEntities.class)
@@ -115,94 +96,20 @@ public abstract class EntityConfigMixin {
                         e.printStackTrace();
                     }
                 }
-                ThaumTweaks.LOGGER.info("type:" + pechType + ",tier:" + tier + ",item:" + item.getRegistryName() + ", amount:" + amount + ", tag:" + tag);
-                if (pechType.equals("COMMON")){
-                    trades.get("MINER").add(Arrays.asList(tier, is));
-                    trades.get("MAGE").add(Arrays.asList(tier, is));
-                    trades.get("ARCHER").add(Arrays.asList(tier, is));
+                //ThaumTweaks.LOGGER.info("type:" + pechType + ",tier:" + tier + ",item:" + item.getRegistryName() + ", amount:" + amount + ", tag:" + tag);
+                for (int i = 0; i < amount; i++) {
+                    if (pechType.equals("COMMON")) {
+                        trades.get("MINER").add(Arrays.asList(tier, is));
+                        trades.get("MAGE").add(Arrays.asList(tier, is));
+                        trades.get("ARCHER").add(Arrays.asList(tier, is));
+                    } else
+                        trades.get(pechType).add(Arrays.asList(tier, is));
                 }
-                else
-                    trades.get(pechType).add(Arrays.asList(tier, is));
             }
         }
         EntityPech.tradeInventory.put(0, trades.get("MINER"));
         EntityPech.tradeInventory.put(1, trades.get("MAGE"));
         EntityPech.tradeInventory.put(2, trades.get("ARCHER"));
-
-        /*ArrayList<List> forager = new ArrayList<>();
-        forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 0)));
-        forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 1)));
-        forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 6)));
-        forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 7)));
-        if (ModConfig.foundCopperIngot)
-            forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 2)));
-        if (ModConfig.foundTinIngot)
-            forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 3)));
-        if (ModConfig.foundSilverIngot)
-            forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 4)));
-        if (ModConfig.foundLeadIngot)
-            forager.add(Arrays.asList(1, new ItemStack(ItemsTC.clusters, 1, 5)));
-        forager.add(Arrays.asList(2, new ItemStack(BlocksTC.saplingGreatwood)));
-        forager.add(Arrays.asList(2, new ItemStack(ItemsTC.thaumiumPick)));
-        forager.add(Arrays.asList(2, new ItemStack(ItemsTC.thaumiumAxe)));
-        forager.add(Arrays.asList(2, new ItemStack(ItemsTC.thaumiumHoe)));
-        forager.add(Arrays.asList(2, new ItemStack(Items.DRAGON_BREATH)));
-        forager.add(Arrays.asList(2, new ItemStack(Items.COMPASS)));
-        forager.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        forager.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        forager.add(Arrays.asList(3, new ItemStack(Items.BLAZE_ROD)));
-        forager.add(Arrays.asList(3, new ItemStack(Items.GOLDEN_APPLE, 1, 0)));
-        forager.add(Arrays.asList(3, new ItemStack(ItemsTC.curio, 1, 4)));
-        forager.add(Arrays.asList(3, new ItemStack(Items.SPECTRAL_ARROW)));
-        forager.add(Arrays.asList(4, new ItemStack(BlocksTC.saplingSilverwood)));
-        forager.add(Arrays.asList(4, new ItemStack(ItemsTC.curio, 1, 4)));
-        forager.add(Arrays.asList(5, new ItemStack(ItemsTC.curio, 1, 4)));
-        forager.add(Arrays.asList(5, new ItemStack(Items.GOLDEN_APPLE, 1, 1)));
-        forager.add(Arrays.asList(5, new ItemStack(Items.TOTEM_OF_UNDYING)));
-        EntityPech.tradeInventory.put(0, forager);
-
-        ArrayList<List> mage = new ArrayList<>();
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.AIR)));
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.EARTH)));
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.FIRE)));
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.WATER)));
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.ORDER)));
-        mage.add(Arrays.asList(1, ThaumcraftApiHelper.makeCrystal(Aspect.ENTROPY)));
-        mage.add(Arrays.asList(2, new ItemStack(Items.POTIONITEM, 1, 8193)));
-        mage.add(Arrays.asList(2, new ItemStack(Items.POTIONITEM, 1, 8261)));
-        mage.add(Arrays.asList(2, ThaumcraftApiHelper.makeCrystal(Aspect.FLUX)));
-        mage.add(Arrays.asList(2, ThaumcraftApiHelper.makeCrystal(Aspect.AURA)));
-        mage.add(Arrays.asList(2, new ItemStack(ItemsTC.clothBoots)));
-        mage.add(Arrays.asList(2, new ItemStack(ItemsTC.clothChest)));
-        mage.add(Arrays.asList(2, new ItemStack(ItemsTC.clothLegs)));
-        mage.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        mage.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        mage.add(Arrays.asList(3, new ItemStack(Items.GOLDEN_APPLE, 1, 0)));
-        mage.add(Arrays.asList(3, new ItemStack(ItemsTC.curio, 1, 4)));
-        mage.add(Arrays.asList(4, new ItemStack(ItemsTC.amuletVis, 1, 0)));
-        mage.add(Arrays.asList(4, new ItemStack(ItemsTC.curio, 1, 4)));
-        mage.add(Arrays.asList(5, new ItemStack(ItemsTC.curio, 1, 4)));
-        mage.add(Arrays.asList(5, new ItemStack(Items.GOLDEN_APPLE, 1, 1)));
-        mage.add(Arrays.asList(5, new ItemStack(ItemsTC.pechWand)));
-        EntityPech.tradeInventory.put(1, mage);
-
-        ArrayList<List> stalker = new ArrayList<>();
-        for(int a = 0; a < 15; ++a)
-            stalker.add(Arrays.asList(1, new ItemStack(BlocksTC.candles.get(EnumDyeColor.byDyeDamage(a)))));
-        stalker.add(Arrays.asList(2, ItemEnchantedBook.getEnchantedItemStack(new EnchantmentData(Enchantments.POWER, 1))));
-        stalker.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        stalker.add(Arrays.asList(3, new ItemStack(Items.EXPERIENCE_BOTTLE)));
-        stalker.add(Arrays.asList(3, new ItemStack(Items.GOLDEN_APPLE, 1, 0)));
-        stalker.add(Arrays.asList(3, new ItemStack(ItemsTC.curio, 1, 4)));
-        stalker.add(Arrays.asList(4, new ItemStack(ItemsTC.eldritchEye)));
-        stalker.add(Arrays.asList(4, new ItemStack(Items.GOLDEN_APPLE, 1, 1)));
-        stalker.add(Arrays.asList(4, new ItemStack(Items.GHAST_TEAR)));
-        stalker.add(Arrays.asList(4, new ItemStack(ItemsTC.baubles, 1, 3)));
-        stalker.add(Arrays.asList(4, new ItemStack(ItemsTC.curio, 1, 4)));
-        stalker.add(Arrays.asList(5, new ItemStack(ItemsTC.curio, 1, 4)));
-        stalker.add(Arrays.asList(5, ItemEnchantedBook.getEnchantedItemStack(new EnchantmentData(Enchantments.FLAME, 1))));
-        stalker.add(Arrays.asList(5, ItemEnchantedBook.getEnchantedItemStack(new EnchantmentData(Enchantments.INFINITY, 1))));
-        EntityPech.tradeInventory.put(2, stalker);*/
 
         ci.cancel();
     }
@@ -281,14 +188,14 @@ public abstract class EntityConfigMixin {
         "\tminecraft:enchanted_book {StoredEnchantments:[{lvl: 5s, id: 48s}]} //Power\n" +
         "COMMON:\n" +
         "\t3:\n" +
-        "\tminecraft:experience_bottle 2\n" +
-        "\tminecraft:golden_apple:0\n" +
+        "\tminecraft:experience_bottle 5\n" +
+        "\tminecraft:golden_apple:0 2\n" +
         "\tthaumcraft:curio:4\n" +
         "\t4:\n" +
-        "\tthaumcraft:curio:4\n" +
+        "\tthaumcraft:curio:4 3\n" +
         "\t5:\n" +
         "\tminecraft:golden_apple:1\n" +
-        "\tthaumcraft:curio:4\n" +
+        "\tthaumcraft:curio:4 5\n" +
         "\n" +
         "#parsing ends with a line starting with #, everything below is a comment. \n" +
         "The format of this file is quite obvious, <item> [tag] [weight]. I just want to specify that \n" +
