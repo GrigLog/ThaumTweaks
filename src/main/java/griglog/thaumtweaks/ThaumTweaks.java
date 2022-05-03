@@ -4,6 +4,7 @@ import griglog.thaumtweaks.crafts.ArcaneTweaks;
 import griglog.thaumtweaks.crafts.CruicibleTweaks;
 import griglog.thaumtweaks.crafts.CustomCrafts;
 import griglog.thaumtweaks.crafts.InfusionTweaks;
+import griglog.thaumtweaks.entity.PechTradesHelper;
 import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -43,5 +44,7 @@ public class ThaumTweaks
             ArcaneTweaks.override();
         }
         CustomCrafts.registerRecipes();
+        if (TTConfig.general.pechs)
+            PechTradesHelper.addUninitialized();
     }
 }
