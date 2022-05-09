@@ -31,7 +31,6 @@ public class PechTradesHelper {
         if (item == null) {
             for (int i = 0; i < amount; i++)
                 uninitializedTrades.add(e);
-            //ThaumTweaks.LOGGER.info(String.format("Item \"%s\" not found, waiting for post-init...", e.id));
             return;
         }
         for (int i = 0; i < amount; i++)
@@ -47,10 +46,10 @@ public class PechTradesHelper {
                 error.printStackTrace();
             }
         }
-        if (e.type.equals(PechType.COMMON)) { //could have done like this before, actually... but who cares
-            EntityPech.tradeInventory.get(0).add(Arrays.asList(e.tier, is));
-            EntityPech.tradeInventory.get(1).add(Arrays.asList(e.tier, is));
-            EntityPech.tradeInventory.get(2).add(Arrays.asList(e.tier, is));
+        if (e.type.equals(PechType.COMMON)) {
+            EntityPech.tradeInventory.get(PechType.MINER.ordinal()).add(Arrays.asList(e.tier, is));
+            EntityPech.tradeInventory.get(PechType.MAGE.ordinal()).add(Arrays.asList(e.tier, is));
+            EntityPech.tradeInventory.get(PechType.ARCHER.ordinal()).add(Arrays.asList(e.tier, is));
         } else
             EntityPech.tradeInventory.get(e.type.ordinal()).add(Arrays.asList(e.tier, is));
     }
@@ -65,5 +64,6 @@ public class PechTradesHelper {
             }
             addEntry(e, item);
         }
+        uninitializedTrades.clear();
     }
 }

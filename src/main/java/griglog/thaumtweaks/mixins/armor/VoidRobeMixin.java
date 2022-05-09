@@ -115,9 +115,10 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
                 .filter(Potion::isBadEffect)
                 .collect(Collectors.toList());
         for (Potion p : badPotions) {
-            if (TTConfig.voidRobe.canClear)
-            player.removePotionEffect(p);
-            RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis);
+            if (TTConfig.voidRobe.canClear && !p.getRegistryName().getResourceDomain().equals("thaumcraft")) {
+                player.removePotionEffect(p);
+                RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis);
+            }
         }
     }
 
