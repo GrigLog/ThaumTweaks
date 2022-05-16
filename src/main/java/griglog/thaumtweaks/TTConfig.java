@@ -47,6 +47,8 @@ public class TTConfig {
         public boolean earths = true;
         @Config.Name("Buffed armor")
         public boolean armor = true;
+        @Config.Name("Research table can fetch items from adjacent containers")
+        public boolean researchTable = true;
     }
 
     public static class CurBand {

@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.items.IItemHandler;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 
@@ -79,6 +80,55 @@ public class SF {  //SomeFuncs
         }
     }
 
+    public static int getCount(IItemHandler handler, ItemStack checked){
+        if (handler == null)
+            return 0;
+        int slots = handler.getSlots();
+        int count = 0;
+        for (int i = 0; i < slots; i++){
+            ItemStack is = handler.getStackInSlot(i);
+            if (is.getItem() == checked.getItem() && (is.hasTagCompound() == checked.hasTagCompound())
+                && (!is.hasTagCompound() || is.getTagCompound().equals(checked.getTagCompound()))){
+                count += is.getCount();
+            }
+        }
+        return count;
+    }
 
+    public static boolean canExtract(IItemHandler handler, ItemStack checked){
+        if (handler == null)
+            return false;
+        int slots = handler.getSlots();
+        int count = 0;
+        for (int i = 0; i < slots; i++){
+            ItemStack is = handler.getStackInSlot(i);
+            if (is.getItem() == checked.getItem() && (is.hasTagCompound() == checked.hasTagCompound())
+                && (!is.hasTagCompound() || is.getTagCompound().equals(checked.getTagCompound()))){
+                count += is.getCount();
+                if (count >= checked.getCount())
+                    return true;
+            }
+        }
+        return false;
+    }
 
+    public static void extract(IItemHandler handler, ItemStack extract){
+        if (handler == null)
+            return;
+        int slots = handler.getSlots();
+        int toExtract = extract.getCount();
+        for (int i = 0; i < slots; i++){
+            ItemStack is = handler.getStackInSlot(i);
+            if (is.getItem() == extract.getItem() && (is.hasTagCompound() == extract.hasTagCompound())
+                && (!is.hasTagCompound() || is.getTagCompound().equals(extract.getTagCompound()))){
+                int count = is.getCount();
+                if (count >= toExtract){
+                    handler.extractItem(i, toExtract, false);
+                    return;
+                }
+                toExtract -= count;
+                handler.extractItem(i, count, false);
+            }
+        }
+    }
 }
