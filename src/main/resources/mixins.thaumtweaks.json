@@ -14,8 +14,6 @@
     "blocks.MatrixMixin",
     "blocks.OreMixin",
     "blocks.PedestalMixin",
-    "blocks.ResearchTableMixin",
-    "blocks.ResearchTableTileMixin",
     "blocks.SiphonMixin",
     "blocks.SmelterMixin",
     "entities.EntityConfigMixin",

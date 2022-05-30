@@ -57,12 +57,13 @@ public abstract class ResearchTableContainerMixin extends Container {
                 IItemHandler inv = null;
                 try {
                     TheorycraftCard card = (tileEntity.data.cardChoices.get(button - 4)).card;
-                    BlockPos p = (BlockPos) invPos.get(tileEntity);
-                    if (TTConfig.general.researchTable && !p.equals(BlockPos.ORIGIN)) {
-                        TileEntity invTile = tileEntity.getWorld().getTileEntity(p);
-                        BlockPos diff = p.subtract(tileEntity.getPos());
-                        if (invTile != null) {
-                            inv = invTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.getFacingFromVector(diff.getX(), diff.getY(), diff.getZ()).getOpposite());
+                    if (TTConfig.general.researchTable) {
+                        for (EnumFacing face : EnumFacing.VALUES) {
+                            BlockPos check = tileEntity.getPos().add(face.getDirectionVec());
+                            TileEntity checkInv = tileEntity.getWorld().getTileEntity(check);
+                            if (checkInv != null && inv == null) {
+                                inv = checkInv.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, face.getOpposite());
+                            }
                         }
                     }
                     int[] invCounts = new int[card.getRequiredItems() != null ? card.getRequiredItems().length : 0];
@@ -122,14 +123,6 @@ public abstract class ResearchTableContainerMixin extends Container {
 
                 return true;
             }
-        }
-    }
-    private static Field invPos;
-    static {
-        try {
-            invPos = TileResearchTable.class.getDeclaredField("invPos");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
         }
     }
     @Shadow
