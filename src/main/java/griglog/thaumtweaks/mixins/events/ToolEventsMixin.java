@@ -14,6 +14,8 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +43,7 @@ public class ToolEventsMixin {
             ItemStack heldItem = event.getHarvester().getHeldItem(event.getHarvester().getActiveHand());
             if (!heldItem.isEmpty()) {
                 List<EnumInfusionEnchantment> list = EnumInfusionEnchantment.getInfusionEnchantments(heldItem);
-                if (event.isSilkTouching() || ForgeHooks.isToolEffective(event.getWorld(), event.getPos(), heldItem) || heldItem.getItem() instanceof ItemTool && ((ItemTool)heldItem.getItem()).getDestroySpeed(heldItem, event.getState()) > 1.0F) {
+                if (event.isSilkTouching() || isToolEffective(heldItem, event.getState()) || heldItem.getItem() instanceof ItemTool && ((ItemTool)heldItem.getItem()).getDestroySpeed(heldItem, event.getState()) > 1.0F) {
                     if (list.contains(EnumInfusionEnchantment.REFINING))
                         doRefining(event, heldItem);
 
@@ -63,6 +65,15 @@ public class ToolEventsMixin {
         }
         dropEarths(event); //should be after refining
     ci.cancel();
+    }
+
+    private static boolean isToolEffective(ItemStack stack, IBlockState state) {
+        for (String toolClass : stack.getItem().getToolClasses(stack)) {
+            if (state.getBlock().isToolEffective(toolClass, state)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void dropEarths(BlockEvent.HarvestDropsEvent event) {
