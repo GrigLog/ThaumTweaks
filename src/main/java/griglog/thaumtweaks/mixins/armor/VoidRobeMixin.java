@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.RechargeHelper;
+import thaumcraft.api.potions.PotionFluxTaint;
 import thaumcraft.common.items.armor.ItemVoidRobeArmor;
 
 import javax.annotation.Nonnull;
@@ -110,16 +112,12 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
     }
 
     void clearDebuffs(EntityPlayer player, ItemStack is) {
-        List<Potion> badPotions = player.getActivePotionEffects().stream()
-                .map(PotionEffect::getPotion)
-                .filter(Potion::isBadEffect)
-                .collect(Collectors.toList());
-        for (Potion p : badPotions) {
-            if (TTConfig.voidRobe.canClear && !p.getRegistryName().getResourceDomain().equals("thaumcraft")) {
-                player.removePotionEffect(p);
-                RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis);
-            }
-        }
+        if (player.getActivePotionEffect(MobEffects.WITHER) != null && RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis))
+            player.removePotionEffect(MobEffects.WITHER);
+        if (player.getActivePotionEffect(MobEffects.POISON) != null && RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis))
+            player.removePotionEffect(MobEffects.POISON);
+        if (player.getActivePotionEffect(PotionFluxTaint.instance) != null && RechargeHelper.consumeCharge(is, player, TTConfig.voidRobe.clearVis))
+            player.removePotionEffect(PotionFluxTaint.instance);
     }
 
     void tryHeal(EntityPlayer player, ItemStack is) {
