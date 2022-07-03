@@ -37,13 +37,5 @@ public abstract class PrimalCrusherMixin extends ItemTool {
         if (stack.isItemDamaged() && entity.ticksExisted % 20 == 0 && entity instanceof EntityLivingBase) {
             stack.damageItem(-12, (EntityLivingBase)entity);
         }
-
     }
-    @Shadow
-    public static ToolMaterial material;
-
-    static {
-        material = TTMaterials.TOOLMAT_PRIMALVOID;
-    }
-
 }
