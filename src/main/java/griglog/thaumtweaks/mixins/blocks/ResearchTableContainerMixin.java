@@ -23,8 +23,10 @@ import thaumcraft.common.lib.utils.InventoryUtils;
 import thaumcraft.common.tiles.crafting.TileResearchTable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 @Mixin(ContainerResearchTable.class)
 public abstract class ResearchTableContainerMixin extends Container {
@@ -54,25 +56,29 @@ public abstract class ResearchTableContainerMixin extends Container {
                     return false;
                 }
                 antiSpam.put(playerIn.getEntityId(), tn);
-                IItemHandler inv = null;
+                List<IItemHandler> invs = new ArrayList<>();
                 try {
                     TheorycraftCard card = (tileEntity.data.cardChoices.get(button - 4)).card;
                     if (TTConfig.general.researchTable) {
                         for (EnumFacing face : EnumFacing.VALUES) {
                             BlockPos check = tileEntity.getPos().add(face.getDirectionVec());
                             TileEntity checkInv = tileEntity.getWorld().getTileEntity(check);
-                            if (checkInv != null && inv == null) {
-                                inv = checkInv.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, face.getOpposite());
+                            if (checkInv != null) {
+                                IItemHandler inv = checkInv.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, face.getOpposite());
+                                if (inv != null)
+                                    invs.add(inv);
                             }
                         }
                     }
-                    int[] invCounts = new int[card.getRequiredItems() != null ? card.getRequiredItems().length : 0];
+                    int[] invContains = new int[card.getRequiredItems() != null ? card.getRequiredItems().length : 0];
                     if (card.getRequiredItems() != null) {
                         ItemStack[] reqItems = card.getRequiredItems();
                         for (int i = 0; i < reqItems.length; i++) {
                             ItemStack required = reqItems[i];
-                            int invCount = Math.min(SF.getCount(inv, required), required.getCount());
-                            invCounts[i] = invCount;
+                            int invCount = 0;
+                            for (IItemHandler inv: invs)
+                                invCount += SF.getCount(inv, required);
+                            invContains[i] = Math.min(invCount, required.getCount());
                             ItemStack playerStack = required.copy();
                             playerStack.setCount(required.getCount() - invCount);
                             if (!playerStack.isEmpty() && !InventoryUtils.isPlayerCarryingAmount(player, playerStack, true)) {
@@ -83,11 +89,11 @@ public abstract class ResearchTableContainerMixin extends Container {
                             for(int i = 0; i < card.getRequiredItems().length; ++i) {
                                 if (card.getRequiredItemsConsumed()[i] && card.getRequiredItems()[i] != null && !card.getRequiredItems()[i].isEmpty()) {
                                     ItemStack stack = card.getRequiredItems()[i];
-                                    int invCount = invCounts[i];
+                                    int invCount = invContains[i];
                                     ItemStack copy = stack.copy();
                                     copy.setCount(invCount);
-                                    SF.extract(inv, copy);
-                                    copy.setCount(stack.getCount() - invCount);
+                                    for (IItemHandler inv : invs)
+                                        copy.setCount(SF.extract(inv, copy));
                                     InventoryUtils.consumePlayerItem(player, copy, true, true);
                                 }
                             }

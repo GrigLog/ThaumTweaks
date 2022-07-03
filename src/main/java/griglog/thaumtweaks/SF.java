@@ -116,9 +116,9 @@ public class SF {  //SomeFuncs
         return false;
     }
 
-    public static void extract(IItemHandler handler, ItemStack extract){
+    public static int extract(IItemHandler handler, ItemStack extract){ //returns how many could not be extracted
         if (handler == null)
-            return;
+            return extract.getCount();
         int slots = handler.getSlots();
         int toExtract = extract.getCount();
         for (int i = 0; i < slots; i++){
@@ -128,12 +128,13 @@ public class SF {  //SomeFuncs
                 int count = is.getCount();
                 if (count >= toExtract){
                     handler.extractItem(i, toExtract, false);
-                    return;
+                    return 0;
                 }
                 toExtract -= count;
                 handler.extractItem(i, count, false);
             }
         }
+        return toExtract;
     }
 
     public static boolean isRechargeable(Item item){
