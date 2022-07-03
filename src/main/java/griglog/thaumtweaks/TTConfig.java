@@ -92,7 +92,7 @@ public class TTConfig {
     public static class FortArmor {
         @Config.Name("Vis consumption's logarithm's base")
         public double logBase = 2;
-        @Config.Name("Vis charge")
+        @Config.Name("Vis charge. Can be set to 0.")
         public int vis = 320;
 
         @Config.Name("Vis-based protection ratio (per item)")
@@ -110,7 +110,7 @@ public class TTConfig {
     public static class VoidRobe {
         @Config.Name("Vis consumption's logarithm's base")
         public double logBase = 2;
-        @Config.Name("Vis charge")
+        @Config.Name("Vis charge. Can be set to 0.")
         public int vis = 480;
 
         @Config.Name("Vis-based protection ratio (per item)")

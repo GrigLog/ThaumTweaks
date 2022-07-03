@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +16,9 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.items.IItemHandler;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
+import thaumcraft.api.items.IRechargable;
+import thaumcraft.common.items.armor.ItemFortressArmor;
+import thaumcraft.common.items.armor.ItemVoidRobeArmor;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -130,5 +134,17 @@ public class SF {  //SomeFuncs
                 handler.extractItem(i, count, false);
             }
         }
+    }
+
+    public static boolean isRechargeable(Item item){
+        if (!(item instanceof IRechargable))
+            return false;
+        if (TTConfig.general.armor == false)
+            return false;
+        if (TTConfig.fortArmor.vis == 0 && item instanceof ItemFortressArmor)
+            return false;
+        if (TTConfig.voidRobe.vis == 0 && item instanceof ItemVoidRobeArmor)
+            return false;
+        return true;
     }
 }
