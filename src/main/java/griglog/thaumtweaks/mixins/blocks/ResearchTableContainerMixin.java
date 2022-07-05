@@ -2,11 +2,8 @@ package griglog.thaumtweaks.mixins.blocks;
 
 import griglog.thaumtweaks.SF;
 import griglog.thaumtweaks.TTConfig;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,15 +14,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import thaumcraft.api.research.theorycraft.ResearchTableData;
 import thaumcraft.api.research.theorycraft.TheorycraftCard;
-import thaumcraft.client.gui.GuiResearchTable;
 import thaumcraft.common.container.ContainerResearchTable;
 import thaumcraft.common.lib.utils.InventoryUtils;
 import thaumcraft.common.tiles.crafting.TileResearchTable;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 @Mixin(ContainerResearchTable.class)
@@ -89,11 +83,10 @@ public abstract class ResearchTableContainerMixin extends Container {
                             for(int i = 0; i < card.getRequiredItems().length; ++i) {
                                 if (card.getRequiredItemsConsumed()[i] && card.getRequiredItems()[i] != null && !card.getRequiredItems()[i].isEmpty()) {
                                     ItemStack stack = card.getRequiredItems()[i];
-                                    int invCount = invContains[i];
                                     ItemStack copy = stack.copy();
-                                    copy.setCount(invCount);
-                                    for (IItemHandler inv : invs)
+                                    for (IItemHandler inv : invs) {
                                         copy.setCount(SF.extract(inv, copy));
+                                    }
                                     InventoryUtils.consumePlayerItem(player, copy, true, true);
                                 }
                             }
@@ -126,7 +119,6 @@ public abstract class ResearchTableContainerMixin extends Container {
                     tileEntity.data.drawCards(button, playerIn);
                     tileEntity.syncTile(false);
                 }
-
                 return true;
             }
         }

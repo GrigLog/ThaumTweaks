@@ -19,7 +19,6 @@ import java.util.List;
 
 @Mixin(TileVoidSiphon.class)
 public abstract class SiphonMixin extends TileThaumcraft {
-
     public void update() {
         if (this.initial) {
             this.initial = false;
@@ -86,13 +85,9 @@ public abstract class SiphonMixin extends TileThaumcraft {
     @Shadow
     public int progress;
 
-    @Shadow
     boolean initial;
-    @Shadow
     public abstract ItemStack getStackInSlot(int index);
-    @Shadow
     public abstract void setInventorySlotContents(int a, ItemStack b);
-    @Shadow
     protected abstract void syncSlots(EntityPlayerMP player);
 
     private static final int cap = (int) (2000 / (TTConfig.voidSiphon.allow ? TTConfig.voidSiphon.speed : 1));
