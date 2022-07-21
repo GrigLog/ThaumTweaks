@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.items;
 
+import griglog.thaumtweaks.TTConfig;
 import griglog.thaumtweaks.items.TTMaterials;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -32,10 +33,10 @@ public abstract class PrimalCrusherMixin extends ItemTool {
         }
     }
 
-    public void onUpdate(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-        super.onUpdate(stack, world, entity, p_77663_4_, p_77663_5_);
+    public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+        super.onUpdate(stack, world, entity, slot, selected);
         if (stack.isItemDamaged() && entity.ticksExisted % 20 == 0 && entity instanceof EntityLivingBase) {
-            stack.damageItem(-12, (EntityLivingBase)entity);
+            stack.damageItem(TTConfig.general.materialOverride ? -12 : -1, (EntityLivingBase)entity);
         }
     }
 }
