@@ -83,10 +83,10 @@ public abstract class SiphonMixin extends TileThaumcraft {
     }
 
 
-    @Shadow
+    @Shadow(remap = false)
     private List<EntityFluxRift> getValidRifts(){return new ArrayList<>();}
-    @Shadow
+    @Shadow(remap = false)
     int counter;
-    @Shadow
+    @Shadow(remap = false)
     public int progress;
 }

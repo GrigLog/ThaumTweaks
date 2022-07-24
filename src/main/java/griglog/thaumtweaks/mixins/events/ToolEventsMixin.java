@@ -171,9 +171,9 @@ public class ToolEventsMixin {
         }
     }
 
-    @Shadow
+    @Shadow(remap = false)
     static boolean blockDestructiveRecursion;
-    @Shadow
+    @Shadow(remap = false)
     static HashMap<Integer, EnumFacing> lastFaceClicked;
 
 

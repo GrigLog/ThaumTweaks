@@ -78,8 +78,8 @@ public class GolemHelperMixin {
         return FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(username);
     }
 
-    @Shadow
+    @Shadow(remap = false)
     private static boolean mayPlace(World world, Block blockIn, BlockPos pos, EnumFacing side) { return false;};
-    @Shadow
+    @Shadow(remap = false)
     private static void dropSomeItems(FakePlayer fp2, IGolemAPI golem) {}
 }

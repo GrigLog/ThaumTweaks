@@ -21,8 +21,8 @@ public class GolemMaterialMixin {
         }
     }
 
-    @Shadow
+    @Shadow(remap = false)
     int healthMod;
-    @Shadow
+    @Shadow(remap = false)
     int armor;
 }

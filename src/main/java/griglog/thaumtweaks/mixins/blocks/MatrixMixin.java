@@ -171,21 +171,21 @@ public abstract class MatrixMixin extends TileThaumcraft {
     }
 
 
-    @Shadow
+    @Shadow(remap = false)
     private float calcDeminishingReturns(Block sb1, float amt1) { return 0; }
-    @Shadow
+    @Shadow(remap = false)
     private ArrayList<BlockPos> pedestals;
-    @Shadow
+    @Shadow(remap = false)
     HashMap<Block, Integer> tempBlockCount;
-    @Shadow
+    @Shadow(remap = false)
     private ArrayList<BlockPos> problemBlocks;
-    @Shadow
+    @Shadow(remap = false)
     private int cycleTime;
-    @Shadow
+    @Shadow(remap = false)
     public float stabilityReplenish;
-    @Shadow
+    @Shadow(remap = false)
     public float costMult;
-    @Shadow
+    @Shadow(remap = false)
     private int countDelay;
 
 }

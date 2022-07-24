@@ -123,10 +123,10 @@ public abstract class ResearchTableContainerMixin extends Container {
             }
         }
     }
-    @Shadow
+    @Shadow(remap = false)
     public TileResearchTable tileEntity;
-    @Shadow
+    @Shadow(remap = false)
     EntityPlayer player;
-    @Shadow
+    @Shadow(remap = false)
     static HashMap<Integer, Long> antiSpam;
 }
