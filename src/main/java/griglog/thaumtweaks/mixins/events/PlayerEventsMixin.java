@@ -2,11 +2,11 @@ package griglog.thaumtweaks.mixins.events;
 
 import baubles.api.BaublesApi;
 import griglog.thaumtweaks.TTConfig;
+import griglog.thaumtweaks.ThaumTweaks;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thaumcraft.api.ThaumcraftApi;
-import thaumcraft.api.aura.AuraHelper;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
 import thaumcraft.api.items.IRechargable;
 import thaumcraft.api.items.ItemsTC;
@@ -22,7 +21,6 @@ import thaumcraft.api.items.RechargeHelper;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.common.config.ModConfig;
 import thaumcraft.common.lib.events.PlayerEvents;
-import thaumcraft.common.world.aura.AuraHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,74 +41,22 @@ public class PlayerEventsMixin {
         ci.cancel();
     }
 
-    private static void handleRunicArmor(EntityPlayer player) {
-        int charge;
-        if (player.ticksExisted % 20 == 0) {
-            int max = 0;
-
-            for(int a = 0; a < 4; ++a) {
-                max += getRunicCharge((ItemStack)player.inventory.armorInventory.get(a));
-            }
-
-            IInventory baubles = BaublesApi.getBaubles(player);
-
-            for(charge = 0; charge < baubles.getSizeInventory(); ++charge) {
-                max += getRunicCharge(baubles.getStackInSlot(charge));
-            }
-
-            if (lastMaxCharge.containsKey(player.getEntityId())) {
-                charge = (Integer)lastMaxCharge.get(player.getEntityId());
-                if (charge > max) {
-                    player.setAbsorptionAmount(player.getAbsorptionAmount() - (float)(charge - max));
-                }
-
-                if (max <= 0) {
-                    lastMaxCharge.remove(player.getEntityId());
-                }
-            }
-
-            if (max > 0) {
-                runicInfo.put(player.getEntityId(), max);
-                lastMaxCharge.put(player.getEntityId(), max);
-            } else {
-                runicInfo.remove(player.getEntityId());
-            }
-        }
-
-        if (runicInfo.containsKey(player.getEntityId())) {
-            if (!nextCycle.containsKey(player.getEntityId())) {
-                nextCycle.put(player.getEntityId(), 0L);
-            }
-
-            long time = System.currentTimeMillis();
-            charge = (int)player.getAbsorptionAmount();
-            if (charge == 0 && lastCharge.containsKey(player.getEntityId()) && (Integer)lastCharge.get(player.getEntityId()) > 0) {
-                nextCycle.put(player.getEntityId(), time + (long) ModConfig.CONFIG_MISC.shieldWait);
-                lastCharge.put(player.getEntityId(), 0);
-            }
-
-            tryRecoverShield(player, charge, time);
-        }
-
-    }
-
-    private static void tryRecoverShield(EntityPlayer player, int charge, long time) {
+    @Inject(method="handleRunicArmor", at=@At(value="FIELD", target="Lthaumcraft/common/lib/events/PlayerEvents;runicInfo:Ljava/util/HashMap;", ordinal=3), cancellable = true, remap=false)
+    private static void tryRechargeFromInventory(EntityPlayer player, CallbackInfo ci) {
+        long time = System.currentTimeMillis();
+        int charge = (int) player.getAbsorptionAmount();
         if (charge < runicInfo.get(player.getEntityId()) && nextCycle.get(player.getEntityId()) < time) {
             ArrayList<ItemStack> equip = getRechargables(player);
-            //try to recharge from inventory
             if (equip.size() > 0) {
                 ItemStack chosen = equip.get(player.world.rand.nextInt(equip.size()));
                 if (RechargeHelper.consumeCharge(chosen, player, 5)) {
-                    double boost = TTConfig.runShield.allow ? TTConfig.runShield.invBoost: 1;
+                    double boost = TTConfig.runShield.allow ? TTConfig.runShield.invBoost : 1;
                     recoverShield(player, charge, time, (int) (ModConfig.CONFIG_MISC.shieldRecharge / boost));
+                    ci.cancel();
                 }
-            //try to recharge from aura
-            } else if (!AuraHandler.shouldPreserveAura(player.world, player, player.getPosition()) &&
-                    AuraHelper.getVis(player.world, new BlockPos(player)) >= (float) ModConfig.CONFIG_MISC.shieldCost) {
-                AuraHandler.drainVis(player.world, new BlockPos(player), (float) ModConfig.CONFIG_MISC.shieldCost, false);
-                recoverShield(player, charge, time, ModConfig.CONFIG_MISC.shieldRecharge);
             }
         }
+        //then it will try to subtract from aura
     }
 
     private static void recoverShield(EntityPlayer player, int charge, long time, int cd) {
@@ -156,19 +102,11 @@ public class PlayerEventsMixin {
     }
 
 
-    @Shadow
-    public static int getRunicCharge(ItemStack itemStack) {
-        return 0;
-    }
-    @Shadow
+    @Shadow(remap = false)
     static HashMap<Integer, Long> nextCycle;
-    @Shadow
+    @Shadow(remap = false)
     static HashMap<Integer, Integer> lastCharge;
-    @Shadow
-    static HashMap<Integer, Integer> lastMaxCharge;
-    @Shadow
+    @Shadow(remap = false)
     static HashMap<Integer, Integer> runicInfo;
-    @Shadow
-    static HashMap<String, Long> upgradeCooldown;
 
 }
