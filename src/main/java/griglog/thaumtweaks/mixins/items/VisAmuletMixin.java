@@ -32,7 +32,7 @@ public abstract class VisAmuletMixin extends ItemTCBase {
 
             if (lastTick != player.ticksExisted) {
                 lastTick = player.ticksExisted;
-                giveVis(player, calculateVis(amuletCount.get(id)));
+                giveVis((EntityPlayer) player, calculateVis(amuletCount.get(id)));
                 amuletCount.put(id, 0);
             }
         }
@@ -42,33 +42,24 @@ public abstract class VisAmuletMixin extends ItemTCBase {
         return (int)Math.sqrt(count);
     }
 
-    private void giveVis (EntityLivingBase player,int amount){
-        NonNullList<ItemStack> inv = ((EntityPlayer) player).inventory.mainInventory;
-        int a = 0;
-
-        while (true) {
-            InventoryPlayer var10001 = ((EntityPlayer) player).inventory;
-            if (a >= InventoryPlayer.getHotbarSize()) {
-                IBaublesItemHandler baubles = BaublesApi.getBaublesHandler((EntityPlayer) player);
-
-                for (a = 0; a < baubles.getSlots(); ++a) {
-                    if (RechargeHelper.rechargeItem(player.world, baubles.getStackInSlot(a), player.getPosition(), (EntityPlayer) player, amount) > 0.0F) {
-                        return;
-                    }
-                }
-                inv = ((EntityPlayer) player).inventory.armorInventory;
-                for (a = 0; a < inv.size(); ++a) {
-                    if (RechargeHelper.rechargeItem(player.world, (ItemStack) inv.get(a), player.getPosition(), (EntityPlayer) player, amount) > 0.0F) {
-                        return;
-                    }
-                }
-                break;
-            }
-            if (RechargeHelper.rechargeItem(player.world, (ItemStack) inv.get(a), player.getPosition(), (EntityPlayer) player, amount) > 0.0F) {
+    private void giveVis (EntityPlayer player, int amount){
+        NonNullList<ItemStack> mainInv = player.inventory.mainInventory;
+        for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++) {
+            if (RechargeHelper.rechargeItem(player.world, mainInv.get(i), player.getPosition(), player, amount) > 0.0F) {
                 return;
             }
-
-            ++a;
+        }
+        IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(player);
+        for (int i = 0; i < baubles.getSlots(); ++i) {
+            if (RechargeHelper.rechargeItem(player.world, baubles.getStackInSlot(i), player.getPosition(), player, amount) > 0.0F) {
+                return;
+            }
+        }
+        NonNullList<ItemStack> armorInv = player.inventory.armorInventory;
+        for (int i = 0; i < armorInv.size(); ++i) {
+            if (RechargeHelper.rechargeItem(player.world, armorInv.get(i), player.getPosition(), player, amount) > 0.0F) {
+                return;
+            }
         }
     }
 }
