@@ -139,7 +139,7 @@ public abstract class VoidRobeMixin extends ItemArmor implements IRechargable {
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.75 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.voidRobe.logBase)))))
+                        Math.round((float)(Math.log(Math.max(damage, 1)) / Math.log(TTConfig.voidRobe.logBase)))))
             return TTConfig.voidRobe.protec;
         return 0;
     }
