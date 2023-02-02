@@ -111,7 +111,7 @@ public abstract class FortressArmorMixin extends ItemArmor implements IRechargab
             return 0;
         if (RechargeHelper.getChargePercentage(is, player) > 0.70 &&
                 RechargeHelper.consumeCharge(is, player,
-                        Math.round((float)(Math.log(damage) / Math.log(TTConfig.fortArmor.logBase)))))
+                        Math.round((float)(Math.log(Math.max(damage, 1)) / Math.log(TTConfig.fortArmor.logBase)))))
             return TTConfig.fortArmor.protec;
         return 0;
     }
