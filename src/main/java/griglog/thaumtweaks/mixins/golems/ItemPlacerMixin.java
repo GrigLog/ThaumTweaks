@@ -1,5 +1,6 @@
 package griglog.thaumtweaks.mixins.golems;
 
+import griglog.thaumtweaks.SF;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,8 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import thaumcraft.api.capabilities.IPlayerKnowledge;
-import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.common.golems.EntityThaumcraftGolem;
 import thaumcraft.common.golems.GolemProperties;
 import thaumcraft.common.golems.ItemGolemPlacer;
@@ -48,19 +47,12 @@ public class ItemPlacerMixin extends ItemTCBase {
             } else {
                 EntityThaumcraftGolem golem = new EntityThaumcraftGolem(world);
                 golem.setPositionAndRotation((double)pos.getX() + 0.5D, (double)pos.getY(), (double)pos.getZ() + 0.5D, 0.0F, 0.0F);
-                if (golem != null && world.spawnEntity(golem)) {
+                if (world.spawnEntity(golem)) {
                     golem.setOwned(true);
                     golem.setValidSpawn();
                     golem.setOwnerId(player.getUniqueID());
 
-                    IPlayerKnowledge golemBrains = golem.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-                    IPlayerKnowledge ownerBrains = player.getCapability(ThaumcraftCapabilities.KNOWLEDGE, null);
-                    if (golemBrains != null && ownerBrains != null){
-                        for (String k : ownerBrains.getResearchList()) {
-                            if (!golemBrains.isResearchKnown(k))
-                                golemBrains.addResearch(k);
-                        }
-                    }
+                    SF.copyKnowledge(player, golem);
 
                     if (player.getHeldItem(hand).hasTagCompound() && player.getHeldItem(hand).getTagCompound().hasKey("props")) {
                         golem.setProperties(GolemProperties.fromLong(player.getHeldItem(hand).getTagCompound().getLong("props")));
